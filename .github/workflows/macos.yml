@@ -1,0 +1,56 @@
+name: macOS
+
+on:  
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-macos:
+    env:
+      build_type: "Release"
+      vulkan_sdk: "$GITHUB_WORKSPACE/vulkan_sdk/"
+      vulkan_version: "1.2.162.1"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: "macOS 10.15 + Xcode 11.7"
+            os: macos-10.15
+            compiler: xcode
+            version: "11.7"
+          - name: "macOS 10.15 + Xcode 12.2"
+            os: macos-10.15
+            compiler: xcode
+            version: "12.2"
+
+    runs-on: ${{matrix.os}}
+    name: ${{matrix.name}}
+
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: true
+    - name: Install Vulkan SDK
+      shell: bash
+      run: |
+        brew tap apenngrace/homebrew-vulkan
+        brew cask install vulkan-sdk --verbose ||
+          brew cask install vulkan-sdk --verbose ||
+          brew cask install vulkan-sdk --verbose
+    - name: Configure CMake
+      shell: bash
+      run: |
+        ls -ls /Applications/
+        sudo xcode-select -switch /Applications/Xcode_${{ matrix.version }}.app
+        echo "CC=clang" >> $GITHUB_ENV
+        echo "CXX=clang++" >> $GITHUB_ENV
+        export VULKAN_SDK="${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/x86_64"
+        export PATH=$VULKAN_SDK/bin:$PATH
+        export LD_LIBRARY_PATH=$VULKAN_SDK/lib:$LD_LIBRARY_PATH
+        export VK_LAYER_PATH=$VULKAN_SDK/etc/explicit_layer.d
+    - name: Configure Build
+      run: mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release
+    - name: Build
+      run: cd build && make

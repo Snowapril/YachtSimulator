@@ -1,0 +1,74 @@
+name: Ubuntu
+
+on:  
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-ubuntu:
+    env:
+      build_type: "Release"
+      vulkan_sdk: "$GITHUB_WORKSPACE/vulkan_sdk/"
+      vulkan_version: "1.2.162.1"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: "Ubuntu 18.04 + GCC-8"
+            os: ubuntu-18.04
+            compiler: gcc
+            version: "8"
+          - name: "Ubuntu 20.04 + GCC-9"
+            os: ubuntu-20.04
+            compiler: gcc
+            version: "9"
+          - name: "Ubuntu 18.04 + Clang-9"
+            os: ubuntu-18.04
+            compiler: clang
+            version: "9"
+          - name: "Ubuntu 20.04 + Clang-10"
+            os: ubuntu-20.04
+            compiler: clang
+            version: "10"
+
+    runs-on: ${{matrix.os}}
+    name: ${{matrix.name}}
+
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        submodules: true
+    - name: Install Dependency
+      run: |
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+        sudo apt-get update
+        sudo apt-get install xorg-dev vulkan-sdk build-essential
+    - name: Install Vulkan SDK
+      shell: bash
+      run: |
+        # Download Vulkan SDK
+        curl -LS -o vulkansdk.tar.gz \
+          https://sdk.lunarg.com/sdk/download/${{ env.vulkan_version }}/linux/vulkansdk-linux-x86_64-${{ env.vulkan_version }}.tar.gz
+        # Create Vulkan SDK directory and extract
+        mkdir "${{ env.vulkan_sdk }}"
+        tar -xfz vulkansdk.tar.gz -C "${{ env.vulkan_sdk }}"
+    - name: Configure CMake
+      shell: bash
+      run: |
+        if [ "${{ matrix.compiler }}" = "gcc" ]; then
+          echo "CC=gcc-${{ matrix.version }}" >> $GITHUB_ENV
+          echo "CXX=g++-${{ matrix.version }}" >> $GITHUB_ENV
+        else
+          echo "CC=clang-${{ matrix.version }}" >> $GITHUB_ENV
+          echo "CXX=clang++-${{ matrix.version }}" >> $GITHUB_ENV
+        fi
+        export VULKAN_SDK="${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/x86_64"
+        export PATH=$VULKAN_SDK/bin:$PATH
+        export LD_LIBRARY_PATH=$VULKAN_SDK/lib:$LD_LIBRARY_PATH
+        export VK_LAYER_PATH=$VULKAN_SDK/etc/explicit_layer.d
+    - name: Configure Build
+      run: mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release
+    - name: Build
+      run: cd build && make
