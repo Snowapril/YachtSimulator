@@ -6,6 +6,10 @@
 ![Window github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/window.yml/badge.svg?branch=main)
 ![MacOS github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/macos.yml/badge.svg?branch=main)
 
+## reference
+
+[![Yacht Thumbnail](https://img.youtube.com/vi/I-DsOVUYxXw/0.jpg)](https://youtu.be/I-DsOVUYxXw?t=94 "Yacht Thumbnail")
+
 ## dependency
 *   physx-4.1
 *   glfw
