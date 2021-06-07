@@ -5,6 +5,7 @@
 ![Ubuntu github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/ubuntu.yml/badge.svg?branch=main)
 ![Window github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/window.yml/badge.svg?branch=main)
 ![MacOS github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/macos.yml/badge.svg?branch=main)
+![pre-commit github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/pre-commit.yml/badge.svg?branch=main)
 
 ## reference
 
