@@ -1,0 +1,20 @@
+name: pre-commit
+
+on:  
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install Dependency
+      run: |
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+        sudo apt-get update
+        sudo apt-get install clang clang-format clang-tidy uncrustify cppcheck
+    - uses: actions/setup-python@v2
+    - uses: pre-commit/action@v2.0.2
