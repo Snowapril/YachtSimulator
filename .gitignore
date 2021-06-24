@@ -34,3 +34,5 @@ CMakeUserPresets.json
 build/*
 
 *.spv
+
+.vs/
