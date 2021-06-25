@@ -1,6 +1,8 @@
 #ifndef MACROS_HPP
 #define MACROS_HPP
 
+#include <Common/Logger.hpp>
+
 #if defined(_WIN32) || defined(_WIN64)
 #define YACHT_WINDOWS
 #elif defined(__APPLE__)
@@ -23,14 +25,18 @@ typedef SSIZE_T ssize_t;
 #define UNUSED_VARIABLE(x) ((void)x)
 #endif
 
-#ifndef VK_CHECK
-#define VK_CHECK(x)       \
-    VkResult err = x;     \
-    if (err)              \
-    {                     \
-        LOG_ERROR << err; \
-        std::abort();     \
+template <typename Result>
+inline bool VkCheckError(Result result)
+{
+    if (result)
+    {
+        LOG_ERROR << result;
+        return false;
     }
-#endif
+    else
+    {
+        return true;
+    }
+}
 
 #endif  //! end of Macros.hpp
