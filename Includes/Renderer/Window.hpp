@@ -1,8 +1,8 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
-#include <Renderer/Resource.hpp>
 #include <vulkan/vulkan.h>
+#include <Renderer/Resource.hpp>
 
 struct GLFWwindow;
 
@@ -15,7 +15,7 @@ class Window : public Resource
     Window();
 
     //! Constructor with window creation settings
-    Window(int width, int height, const char* title);
+    Window(int width, int height, const std::string &title);
 
     //! Default destructr
     ~Window();
@@ -25,14 +25,26 @@ class Window : public Resource
     //! \param height screen height of the generated window
     //! \param title screen title of the generated window
     //! \return whether if window creation is successful or not
-    bool Initialize(int width, int height, const char* title);
+    bool Initialize(int width, int height, const std::string &title);
 
-    //! \brief Return generated window screen size
+    //! Return generated window screen size
     VkExtent2D GetScreenSize() const;
+
+    //! Return generated window screen title
+    std::string GetWindowTitle() const;
+
+    //! Create window surface with given vulkan instance
+    bool CreateWindowSurface(VkInstance instance);
+
+    //! Return generated window screen title
+    VkSurfaceKHR GetWindowSurface() const;
 
  protected:
     VkExtent2D _screenSize{ 0, 0 };
-    GLFWwindow* _window = nullptr;
+    VkSurfaceKHR _surface;
+    GLFWwindow *_window = nullptr;
+    std::string _title;
+
  private:
 };
 };  // namespace Renderer
