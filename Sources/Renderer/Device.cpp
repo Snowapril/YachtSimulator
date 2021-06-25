@@ -37,14 +37,14 @@ bool Device::InitVulkan()
     _debugMessenger = vkbInstance.debug_messenger;
 
     //! Create window surface with just generated vulkan instance
-    if (!_window->CreateWindowSurface(_instance))
+    if (!_window->CreateWindowSurface(_instance, &_surface))
         return false;
 
     //! Use vkbootstrap to select GPU
     vkb::PhysicalDeviceSelector selector{ vkbInstance };
     vkb::PhysicalDevice physicalDevice =
         selector.set_minimum_version(VK_VERSION_1_0, VK_VERSION_1_1)
-            .set_surface(_window->GetWindowSurface())
+            .set_surface(_surface)
             .select()
             .value();
 
@@ -56,7 +56,34 @@ bool Device::InitVulkan()
     _device = vkbDevice.device;
     _chosenGPU = physicalDevice.physical_device;
 
+    PushDeletionCall([=]() {
+        vkDestroyDevice(_device, nullptr);
+        vkDestroySurfaceKHR(_instance, _surface, nullptr);
+        vkb::destroy_debug_utils_messenger(_instance, _debugMessenger, nullptr);
+        vkDestroyInstance(_instance, nullptr);
+    });
+
     return true;
+}
+
+VkInstance Device::GetInstance() const
+{
+    return _instance;
+}
+
+VkDevice Device::GetDevice() const
+{
+    return _device;
+}
+
+VkPhysicalDevice Device::GetPhysicalDevice() const
+{
+    return _chosenGPU;
+}
+
+VkSurfaceKHR Device::GetSurface() const
+{
+    return _surface;
 }
 
 };  // namespace Renderer

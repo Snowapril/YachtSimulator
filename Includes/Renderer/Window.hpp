@@ -33,15 +33,11 @@ class Window : public Resource
     //! Return generated window screen title
     std::string GetWindowTitle() const;
 
-    //! Create window surface with given vulkan instance
-    bool CreateWindowSurface(VkInstance instance);
-
-    //! Return generated window screen title
-    VkSurfaceKHR GetWindowSurface() const;
+    //! Setup given window surface ptr with given vulkan instance 
+    bool CreateWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
 
  protected:
     VkExtent2D _screenSize{ 0, 0 };
-    VkSurfaceKHR _surface;
     GLFWwindow *_window = nullptr;
     std::string _title;
 

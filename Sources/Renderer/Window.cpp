@@ -44,10 +44,10 @@ bool Window::Initialize(int width, int height, const std::string& title)
     return true;
 }
 
-bool Window::CreateWindowSurface(VkInstance instance)
+bool Window::CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface)
 {
     return VkCheckError(
-        glfwCreateWindowSurface(instance, _window, nullptr, &_surface));
+        glfwCreateWindowSurface(instance, _window, nullptr, surface));
 }
 
 VkExtent2D Window::GetScreenSize() const
@@ -60,8 +60,4 @@ std::string Window::GetWindowTitle() const
     return _title;
 }
 
-VkSurfaceKHR Window::GetWindowSurface() const
-{
-    return _surface;
-}
 };  // namespace Renderer
