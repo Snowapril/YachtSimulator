@@ -1,13 +1,14 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
+#include <Renderer/Resource.hpp>
 #include <vulkan/vulkan.h>
 
 struct GLFWwindow;
 
 namespace Renderer
 {
-class Window
+class Window : public Resource
 {
  public:
     //! Default constructor
