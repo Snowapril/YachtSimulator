@@ -19,11 +19,11 @@ void Resource::PushDeletionCall(DeletionType&& deleteCall)
 
 void Resource::FlushDeletion()
 {
-    while (_deallocateStack.empty())
+    while (_deletionStack.empty())
     {
-        auto& deallocate = _deallocateStack.top();
-        deallocate();
-        _deallocateStack.pop();
+        auto& deletionCall = _deletionStack.top();
+        deletionCall();
+        _deletionStack.pop();
     }
 }
 
