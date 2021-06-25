@@ -33,12 +33,9 @@ jobs:
       with:
         submodules: true
     - name: Install Vulkan SDK
-      shell: bash
       run: |
         brew tap apenngrace/homebrew-vulkan
-        brew cask install vulkan-sdk --verbose ||
-          brew cask install vulkan-sdk --verbose ||
-          brew cask install vulkan-sdk --verbose
+        brew install --cask vulkan-sdk --verbose
     - name: Configure CMake
       shell: bash
       run: |

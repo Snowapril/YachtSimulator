@@ -21,7 +21,6 @@ jobs:
 
     runs-on: ${{matrix.os}}
     name: ${{matrix.name}}
-
     steps:
     - uses: actions/checkout@v1
       with:
@@ -32,14 +31,14 @@ jobs:
     - name: Configure CMake
       shell: bash
       run: |
-        export VK_SDK_PATH="${{ env.vulkan_sdk }}/${{ env.vulkan_version }}
-        export VULKAN_SDK="${{ env.vulkan_sdk }}/${{ env.vulkan_version }}
-        export PATH=$VULKAN_SDK/bin:$PATH
-        export LD_LIBRARY_PATH=$VULKAN_SDK/Lib:$LD_LIBRARY_PATH
-        export VK_LAYER_PATH=$VULKAN_SDK/etc/explicit_layer.d
-    - name: Configure Build
-      run: mkdir build && cd build && cmake .. -DCMAKE_GENERATOR_PLATFORM=x64 -DCMAKE_BUILD_TYPE=${{env.build_type}}
+        export VULKAN_SDK="${{ env.vulkan_sdk }}/${{ env.vulkan_version }}"
+        export VK_SDK_PATH="${{ env.vulkan_sdk }}/${{ env.vulkan_version }}"
+        export PATH="$VULKAN_SDK/bin:$PATH"
+        export LD_LIBRARY_PATH="$VULKAN_SDK/Lib:$LD_LIBRARY_PATH"
+        export VK_LAYER_PATH="$VULKAN_SDK/etc/explicit_layer.d"
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
+    - name: Configure Build
+      run: mkdir build && cd build && cmake .. -DCMAKE_GENERATOR_PLATFORM=x64 -DCMAKE_BUILD_TYPE=Release
     - name: Build
       run: cd build && MSBuild.exe YachtSimulator.sln /p:Configuration=Release
