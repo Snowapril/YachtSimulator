@@ -1,5 +1,7 @@
 #include <vkbootstrap/VkBootstrap.h>
+#include <Common/Macros.hpp>
 #include <Renderer/Device.hpp>
+#include <Renderer/Initializer.hpp>
 #include <Renderer/Window.hpp>
 
 namespace Renderer
@@ -13,6 +15,9 @@ Device::~Device()
 bool Device::Initialize()
 {
     if (!InitVulkan())
+        return false;
+
+    if (!InitCommands())
         return false;
 
     return true;
@@ -56,11 +61,53 @@ bool Device::InitVulkan()
     _device = vkbDevice.device;
     _chosenGPU = physicalDevice.physical_device;
 
+    //! Get graphics queue from vkbootstrap device
+    _graphicsQueue = vkbDevice.get_queue(vkb::QueueType::graphics).value();
+    _graphicsQueueFamily =
+        vkbDevice.get_queue_index(vkb::QueueType::graphics).value();
+
     PushDeletionCall([=]() {
         vkDestroyDevice(_device, nullptr);
         vkDestroySurfaceKHR(_instance, _surface, nullptr);
         vkb::destroy_debug_utils_messenger(_instance, _debugMessenger, nullptr);
         vkDestroyInstance(_instance, nullptr);
+    });
+
+    return true;
+}
+
+bool Device::InitCommands()
+{
+    //! Create a command pool for commands submitted to the graphics queue
+    //! The command pool will be one that can submit graphics commands
+    //! We also want the pool to allow for resetting of individual command
+    //! buffers
+    VkCommandPoolCreateInfo commandPoolInfo =
+        Initializer::CommandPoolCreateInfo(
+            _graphicsQueueFamily,
+            VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
+
+    //! Create command pool and check result
+    if (!VkCheckError(vkCreateCommandPool(_device, &commandPoolInfo, nullptr,
+                                          &_commandPool)))
+        return false;
+
+    //! Allocate the default command buffer that we will use for rendering
+    //! Commands will be made from our _commandPool
+    //! We will allocate only one command buffer.
+    //! Command level is primary
+    VkCommandBufferAllocateInfo commandBufferInfo =
+        Initializer::CommandBufferAllocateInfo(_commandPool, 1,
+                                               VK_COMMAND_BUFFER_LEVEL_PRIMARY);
+
+    //! Allocate command buffer from the command pool and check result
+    if (!VkCheckError(vkAllocateCommandBuffers(_device, &commandBufferInfo,
+                                               &_mainCommandBuffer)))
+        return false;
+
+    PushDeletionCall([=]() {
+        //! Destroying the command pool will destroy all command buffers from it
+        vkDestroyCommandPool(_device, _commandPool, nullptr);
     });
 
     return true;
