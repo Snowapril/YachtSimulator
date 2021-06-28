@@ -29,8 +29,8 @@ bool SwapChain::Initialize(std::shared_ptr<Device> devicePtr, VkExtent2D extent)
 
     //! Store swapchain and its related images
     _swapChain = vkbSwapChain.swapchain;
-    _swapChainImages.swap(vkbSwapChain.get_images().value());
-    _swapChainImageViews.swap(vkbSwapChain.get_image_views().value());
+    _swapChainImages = vkbSwapChain.get_images().value();
+    _swapChainImageViews = vkbSwapChain.get_image_views().value();
     _swapChainImageFormat = vkbSwapChain.image_format;
 
     PushDeletionCall([=]() {
