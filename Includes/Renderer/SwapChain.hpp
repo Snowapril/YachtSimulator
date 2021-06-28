@@ -22,10 +22,17 @@ class SwapChain : public Resource
  protected:
     VkSwapchainKHR _swapChain;
     VkFormat _swapChainImageFormat;
+    VkRenderPass _renderPass;
+    std::vector<VkFramebuffer> _framebuffers;
     std::vector<VkImage> _swapChainImages;
     std::vector<VkImageView> _swapChainImageViews;
-
+    std::shared_ptr<Device> _device;
+    VkExtent2D _extent;
  private:
+    //!
+    bool InitDefaultRenderPass();
+    //!
+    bool InitFramebuffers();
 };
 };  // namespace Renderer
 
