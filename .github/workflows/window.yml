@@ -28,6 +28,14 @@ jobs:
     - name: Install Vulkan SDK
       run: |
         choco install --yes vulkan-sdk --version=${{env.vulkan_version}}
+    - name: Configure CMake
+      shell: bash
+      run: |
+        export VULKAN_SDK="${{ env.vulkan_sdk }}/${{ env.vulkan_version }}"
+        export VK_SDK_PATH="${{ env.vulkan_sdk }}/${{ env.vulkan_version }}"
+        export PATH="$VULKAN_SDK/bin:$PATH"
+        export LD_LIBRARY_PATH="$VULKAN_SDK/Lib:$LD_LIBRARY_PATH"
+        export VK_LAYER_PATH="$VULKAN_SDK/explicit_layer.d"
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
     - name: Configure Build
