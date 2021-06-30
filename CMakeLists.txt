@@ -122,3 +122,4 @@ add_custom_target(
 )
 
 add_subdirectory(Sources)
+add_subdirectory(Tests/UnitTests)
