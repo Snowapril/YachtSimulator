@@ -17,14 +17,18 @@ SwapChain::~SwapChain()
 
 bool SwapChain::Initialize(std::shared_ptr<Device> devicePtr, VkExtent2D extent)
 {
-    vkb::SwapchainBuilder builder{ devicePtr->GetPhysicalDevice(),
-                                   devicePtr->GetDevice(),
-                                   devicePtr->GetSurface() };
+    //! Store devicePtr and extent to member variables
+    _device = devicePtr;
+    _extent = extent;
+
+    vkb::SwapchainBuilder builder{ _device->GetPhysicalDevice(),
+                                   _device->GetDevice(),
+                                   _device->GetSurface() };
 
     vkb::Swapchain vkbSwapChain =
         builder.use_default_format_selection()
             .set_desired_present_mode(VK_PRESENT_MODE_FIFO_KHR)
-            .set_desired_extent(extent.width, extent.height)
+            .set_desired_extent(_extent.width, _extent.height)
             .build()
             .value();
 
@@ -35,21 +39,21 @@ bool SwapChain::Initialize(std::shared_ptr<Device> devicePtr, VkExtent2D extent)
     _swapChainImageFormat = vkbSwapChain.image_format;
 
     PushDeletionCall([=]() {
-        vkDestroySwapchainKHR(devicePtr->GetDevice(), _swapChain, nullptr);
+        vkDestroySwapchainKHR(_device->GetDevice(), _swapChain, nullptr);
         for (auto& image : _swapChainImages)
-            vkDestroyImage(devicePtr->GetDevice(), image, nullptr);
+            vkDestroyImage(_device->GetDevice(), image, nullptr);
         for (auto& imageView : _swapChainImageViews)
-            vkDestroyImageView(devicePtr->GetDevice(), imageView, nullptr);
+            vkDestroyImageView(_device->GetDevice(), imageView, nullptr);
     });
-
-    //! Store devicePtr and extent to member variables
-    _device = devicePtr;
-    _extent = extent;
 
     if (!InitDefaultRenderPass())
         return false;
 
     if (!InitFramebuffers())
+        return false;
+
+    //! Initialize the vulkan synchronization structures
+    if (!InitSyncStructures())
         return false;
 
     return true;
@@ -139,6 +143,46 @@ bool SwapChain::InitFramebuffers()
                                  nullptr);
         });
     }
+
+    return true;
+}
+
+bool SwapChain::InitSyncStructures()
+{
+    //! Create synchronization structures
+    VkFenceCreateInfo fenceInfo;
+    fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+    fenceInfo.pNext = nullptr;
+    //! We want to create the fence with the create signaled flag,
+    //! so we can wait on it before using it
+    //! on a GPU command(for the first frame)
+    fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+
+    if (!VkCheckError(vkCreateFence(_device->GetDevice(), &fenceInfo, nullptr,
+                                    &_renderFence)))
+        return false;
+
+    //! For the semaphores, we don't need any flags
+    VkSemaphoreCreateInfo semaphoreInfo;
+    semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+    semaphoreInfo.pNext = nullptr;
+    semaphoreInfo.flags = 0;
+
+    if (!VkCheckError(vkCreateSemaphore(_device->GetDevice(), &semaphoreInfo,
+                                        nullptr, &_presentSemaphore)))
+        return false;
+
+    if (!VkCheckError(vkCreateSemaphore(_device->GetDevice(), &semaphoreInfo,
+                                        nullptr, &_renderSemaphore)))
+        return false;
+
+    //! Push fence & semaphore deletion call
+    PushDeletionCall([=]() {
+        vkDeviceWaitIdle(_device->GetDevice());
+        vkDestroyFence(_device->GetDevice(), _renderFence, nullptr);
+        vkDestroySemaphore(_device->GetDevice(), _presentSemaphore, nullptr);
+        vkDestroySemaphore(_device->GetDevice(), _renderSemaphore, nullptr);
+    });
 
     return true;
 }

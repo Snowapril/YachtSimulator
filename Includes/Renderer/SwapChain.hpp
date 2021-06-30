@@ -28,11 +28,16 @@ class SwapChain : public Resource
     std::vector<VkImageView> _swapChainImageViews;
     std::shared_ptr<Device> _device;
     VkExtent2D _extent;
+    VkSemaphore _presentSemaphore, _renderSemaphore;
+    VkFence _renderFence;
+
  private:
-    //!
+    //! Initialize default renderpass with only one color attachment
     bool InitDefaultRenderPass();
-    //!
+    //! Create framebuffer with default renderpass
     bool InitFramebuffers();
+    //! Initialize several synchronization structures
+    bool InitSyncStructures();
 };
 };  // namespace Renderer
 
