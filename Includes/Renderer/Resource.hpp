@@ -19,12 +19,13 @@ class Resource
     Resource(Resource&&) = delete;
     Resource& operator=(const Resource&) = delete;
     Resource& operator=(Resource&&) = delete;
+
+ protected:
     //! Push the dealloc
     void PushDeletionCall(DeletionType&& deleteCall);
     //! Flush the deletion call in the stakc
     void FlushDeletion();
 
- protected:
  private:
     std::stack<DeletionType> _deletionStack;
 };
