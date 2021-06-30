@@ -18,6 +18,13 @@ class SwapChain : public Resource
     ~SwapChain();
     //! Initialize swapchain
     bool Initialize(std::shared_ptr<Device> devicePtr, VkExtent2D extent);
+    //! Acquire next swapchain image index
+    //! This call will make CPU threads blocked
+    bool AcquireNextImage(unsigned int* swapChainIndex);
+    //! Get swapchain image format
+    VkFormat GetImageFormat();
+    //! Get swapchain handle
+    VkSwapchainKHR GetSwapChain();
 
  protected:
     VkSwapchainKHR _swapChain;

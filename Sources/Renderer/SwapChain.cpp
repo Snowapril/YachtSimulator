@@ -187,4 +187,33 @@ bool SwapChain::InitSyncStructures()
     return true;
 }
 
+bool SwapChain::AcquireNextImage(unsigned int* swapChainIndex)
+{
+    //! Get the VkDevice
+    VkDevice device = _device->GetDevice();
+    //! Wait until the GPU has finished rendering the last frame.
+    //! Timeout of 1 second
+    if (!VkCheckError(
+            vkWaitForFences(device, 1, &_renderFence, true, 1000000000)))
+        return false;
+    if (!VkCheckError(vkResetFences(device, 1, &_renderFence)))
+        return false;
+
+    if (!VkCheckError(vkAcquireNextImageKHR(device, _swapChain, 1000000000,
+                                            _presentSemaphore, nullptr,
+                                            swapChainIndex)))
+        return false;
+
+    return true;
+}
+
+VkFormat SwapChain::GetImageFormat()
+{
+    return _swapChainImageFormat;
+}
+
+VkSwapchainKHR SwapChain::GetSwapChain()
+{
+    return _swapChain;
+}
 };  // namespace Renderer
