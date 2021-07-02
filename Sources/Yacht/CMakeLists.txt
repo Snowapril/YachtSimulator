@@ -2,7 +2,7 @@
 set(target YachtSimulator)
 
 # Define root directory
-set(root_dir ${CMAKE_CURRENT_SOURCE_DIR}/..)
+set(root_dir ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
 # Includes
 include_directories(
@@ -46,6 +46,7 @@ target_compile_options(${target}
 target_compile_definitions(${target}
     PRIVATE
     RESOURCES_DIR="${RESOURCES_DIR}"
+    ${DEFAULT_COMPILE_DEFINITIONS}
 )
 
 target_link_libraries(${target}
@@ -54,10 +55,9 @@ target_link_libraries(${target}
     PUBLIC
     ${DEFAULT_LINKER_OPTIONS}
 	${DEFAULT_LIBRARIES}
-    ${Vulkan_LIBRARY}
-    vkbootstrap
-    tinyobjloader
-    imgui
-    glfw
+    YachtCommon
+    YachtModel
+    YachtNetwork
+    YachtRenderer
     INTERFACE
 )
