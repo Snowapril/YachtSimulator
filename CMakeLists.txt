@@ -121,5 +121,9 @@ add_custom_target(
 	DEPENDS ${SPIRV_BINARY_FILES}
 )
 
-add_subdirectory(Sources)
+add_subdirectory(Sources/Components/Common)
+add_subdirectory(Sources/Components/Renderer)
+add_subdirectory(Sources/Components/Network)
+add_subdirectory(Sources/Components/Model)
+add_subdirectory(Sources/Yacht)
 add_subdirectory(Tests/UnitTests)
