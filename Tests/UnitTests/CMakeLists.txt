@@ -38,6 +38,7 @@ target_compile_options(${target}
 target_compile_definitions(${target}
     PRIVATE
     RESOURCE_DIR="${PROJECT_SOURCE_DIR}/Resources/"
+    ${DEFAULT_COMPILE_DEFINITIONS}
 )
 
 # Link libraries
