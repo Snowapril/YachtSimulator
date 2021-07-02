@@ -2,7 +2,7 @@
 #define VK_INITIALIZERS_HPP
 
 #include <vulkan/vulkan.h>
-#include <Renderer/Resource.hpp>
+#include <Components/Renderer/Resource.hpp>
 
 namespace Renderer
 {

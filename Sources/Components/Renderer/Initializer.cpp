@@ -1,4 +1,4 @@
-#include <Renderer/Initializer.hpp>
+#include <Components/Renderer/Initializer.hpp>
 
 namespace Renderer
 {

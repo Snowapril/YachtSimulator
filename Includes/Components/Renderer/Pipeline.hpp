@@ -1,7 +1,7 @@
 #ifndef VK_PIPELINE_HPP
 #define VK_PIPELINE_HPP
 
-#include <Renderer/Resource.hpp>
+#include <Componnents/Renderer/Resource.hpp>
 
 namespace Renderer
 {

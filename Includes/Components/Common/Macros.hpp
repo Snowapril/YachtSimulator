@@ -1,7 +1,7 @@
 #ifndef MACROS_HPP
 #define MACROS_HPP
 
-#include <Common/Logger.hpp>
+#include <Components/Common/Logger.hpp>
 
 #if defined(_WIN32) || defined(_WIN64)
 #define YACHT_WINDOWS

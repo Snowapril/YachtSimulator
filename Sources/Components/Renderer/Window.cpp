@@ -1,6 +1,6 @@
-#include <Common/Logger.hpp>
-#include <Common/Macros.hpp>
-#include <Renderer/Window.hpp>
+#include <Components/Common/Logger.hpp>
+#include <Components/Common/Macros.hpp>
+#include <Components/Renderer/Window.hpp>
 #include <cassert>
 
 #define GLFW_INCLUDE_VULKAN

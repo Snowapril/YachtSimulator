@@ -1,4 +1,4 @@
-#include <Renderer/Resource.hpp>
+#include <Components/Renderer/Resource.hpp>
 
 namespace Renderer
 {

@@ -2,7 +2,7 @@
 #define DEVICE_HPP
 
 #include <vulkan/vulkan.h>
-#include <Renderer/Resource.hpp>
+#include <Components/Renderer/Resource.hpp>
 #include <memory>
 
 namespace Renderer

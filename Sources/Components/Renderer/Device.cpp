@@ -1,8 +1,8 @@
 #include <vkbootstrap/VkBootstrap.h>
-#include <Common/Macros.hpp>
-#include <Renderer/Device.hpp>
-#include <Renderer/Initializer.hpp>
-#include <Renderer/Window.hpp>
+#include <Components/Common/Macros.hpp>
+#include <Components/Renderer/Device.hpp>
+#include <Components/Renderer/Initializer.hpp>
+#include <Components/Renderer/Window.hpp>
 
 namespace Renderer
 {
