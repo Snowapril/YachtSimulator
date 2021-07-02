@@ -6,6 +6,11 @@ namespace Model
 class Dice
 {
  public:
+    //! Default constructor
+    Dice();
+    //! Default destructor
+    ~Dice();
+
  protected:
  private:
 };

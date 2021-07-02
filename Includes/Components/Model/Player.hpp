@@ -6,6 +6,11 @@ namespace Model
 class Player
 {
  public:
+    //! Default constructor
+    Player();
+    //! Default destructor
+    ~Player();
+
  protected:
  private:
 };

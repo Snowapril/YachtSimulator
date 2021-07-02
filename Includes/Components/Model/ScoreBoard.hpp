@@ -6,6 +6,11 @@ namespace Model
 class ScoreBoard
 {
  public:
+    //! Default constructor
+    ScoreBoard();
+    //! Default destructor
+    ~ScoreBoard();
+
  protected:
  private:
 };
