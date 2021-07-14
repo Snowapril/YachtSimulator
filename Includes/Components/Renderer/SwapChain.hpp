@@ -2,6 +2,7 @@
 #define SWAPCHAIN_HPP
 
 #include <vulkan/vulkan.h>
+#include <Components/Common/Logger.hpp>
 #include <Components/Renderer/Resource.hpp>
 #include <memory>
 #include <vector>
@@ -14,17 +15,45 @@ class SwapChain : public Resource
  public:
     //! Default constructor
     SwapChain(std::shared_ptr<Device> devicePtr, VkExtent2D extent);
+
     //! Default destructor
     ~SwapChain();
+
     //! Initialize swapchain
     bool Initialize(std::shared_ptr<Device> devicePtr, VkExtent2D extent);
+
     //! Acquire next swapchain image index
     //! This call will make CPU threads blocked
-    bool AcquireNextImage(unsigned int* swapChainIndex);
+    VkResult AcquireNextImage(unsigned int* swapChainIndex);
+
     //! Get swapchain image format
-    VkFormat GetImageFormat();
+    inline VkFormat GetImageFormat() const
+    {
+        return _swapChainImageFormat;
+    }
+
     //! Get swapchain handle
-    VkSwapchainKHR GetSwapChain();
+    inline VkSwapchainKHR GetSwapChain() const
+    {
+        return _swapChain;
+    }
+
+    //! Get currnet render pass
+    inline VkRenderPass GetRenderPass() const
+    {
+        return _renderPass;
+    }
+
+    //! Get framebuffer with given index
+    inline VkFramebuffer GetFramebuffer(unsigned int index) const
+    {
+        if (_framebuffers.size() <= index)
+        {
+            LOG_ERROR << "Out of range in framebuffers";
+            return nullptr;
+        }
+        return _framebuffers[index];
+    }
 
  protected:
     VkSwapchainKHR _swapChain;
@@ -41,8 +70,10 @@ class SwapChain : public Resource
  private:
     //! Initialize default renderpass with only one color attachment
     bool InitDefaultRenderPass();
+
     //! Create framebuffer with default renderpass
     bool InitFramebuffers();
+
     //! Initialize several synchronization structures
     bool InitSyncStructures();
 };

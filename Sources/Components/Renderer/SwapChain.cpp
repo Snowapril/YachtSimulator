@@ -1,8 +1,8 @@
 #include <vkbootstrap/VkBootstrap.h>
-#include <Components/Common/Macros.hpp>
+#include <Components/Common/Constants.hpp>
 #include <Components/Renderer/Device.hpp>
 #include <Components/Renderer/SwapChain.hpp>
-
+#include <Components/Renderer/Utils.hpp>
 namespace Renderer
 {
 SwapChain::SwapChain(std::shared_ptr<Device> devicePtr, VkExtent2D extent)
@@ -12,7 +12,7 @@ SwapChain::SwapChain(std::shared_ptr<Device> devicePtr, VkExtent2D extent)
 
 SwapChain::~SwapChain()
 {
-    //! Do nothing
+    FlushDeletion();
 }
 
 bool SwapChain::Initialize(std::shared_ptr<Device> devicePtr, VkExtent2D extent)
@@ -40,8 +40,7 @@ bool SwapChain::Initialize(std::shared_ptr<Device> devicePtr, VkExtent2D extent)
 
     PushDeletionCall([=]() {
         vkDestroySwapchainKHR(_device->GetDevice(), _swapChain, nullptr);
-        for (auto& image : _swapChainImages)
-            vkDestroyImage(_device->GetDevice(), image, nullptr);
+
         for (auto& imageView : _swapChainImageViews)
             vkDestroyImageView(_device->GetDevice(), imageView, nullptr);
     });
@@ -101,9 +100,9 @@ bool SwapChain::InitDefaultRenderPass()
     renderPassInfo.subpassCount = 1;
     renderPassInfo.pSubpasses = &subpassDesc;
 
-    if (!VkCheckError(vkCreateRenderPass(_device->GetDevice(), &renderPassInfo,
-                                         nullptr, &_renderPass)))
-        return false;
+    VK_CHECK_ERROR(vkCreateRenderPass(_device->GetDevice(), &renderPassInfo,
+                                      nullptr, &_renderPass),
+                   "Failed to create renderpass");
 
     PushDeletionCall([=]() {
         vkDestroyRenderPass(_device->GetDevice(), _renderPass, nullptr);
@@ -133,10 +132,10 @@ bool SwapChain::InitFramebuffers()
     for (size_t i = 0; i < _swapChainImages.size(); ++i)
     {
         framebufferInfo.pAttachments = &_swapChainImageViews[i];
-        if (!VkCheckError(vkCreateFramebuffer(_device->GetDevice(),
-                                              &framebufferInfo, nullptr,
-                                              &_framebuffers[i])))
-            return false;
+        VK_CHECK_ERROR(
+            vkCreateFramebuffer(_device->GetDevice(), &framebufferInfo, nullptr,
+                                &_framebuffers[i]),
+            "Failed to create framebuffer");
 
         PushDeletionCall([=]() {
             vkDestroyFramebuffer(_device->GetDevice(), _framebuffers[i],
@@ -158,9 +157,9 @@ bool SwapChain::InitSyncStructures()
     //! on a GPU command(for the first frame)
     fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-    if (!VkCheckError(vkCreateFence(_device->GetDevice(), &fenceInfo, nullptr,
-                                    &_renderFence)))
-        return false;
+    VK_CHECK_ERROR(
+        vkCreateFence(_device->GetDevice(), &fenceInfo, nullptr, &_renderFence),
+        "Failed to create render fence");
 
     //! For the semaphores, we don't need any flags
     VkSemaphoreCreateInfo semaphoreInfo;
@@ -168,13 +167,13 @@ bool SwapChain::InitSyncStructures()
     semaphoreInfo.pNext = nullptr;
     semaphoreInfo.flags = 0;
 
-    if (!VkCheckError(vkCreateSemaphore(_device->GetDevice(), &semaphoreInfo,
-                                        nullptr, &_presentSemaphore)))
-        return false;
+    VK_CHECK_ERROR(vkCreateSemaphore(_device->GetDevice(), &semaphoreInfo,
+                                     nullptr, &_presentSemaphore),
+                   "Failed to create present semaphore");
 
-    if (!VkCheckError(vkCreateSemaphore(_device->GetDevice(), &semaphoreInfo,
-                                        nullptr, &_renderSemaphore)))
-        return false;
+    VK_CHECK_ERROR(vkCreateSemaphore(_device->GetDevice(), &semaphoreInfo,
+                                     nullptr, &_renderSemaphore),
+                   "Failed to create render semaphore");
 
     //! Push fence & semaphore deletion call
     PushDeletionCall([=]() {
@@ -187,33 +186,24 @@ bool SwapChain::InitSyncStructures()
     return true;
 }
 
-bool SwapChain::AcquireNextImage(unsigned int* swapChainIndex)
+VkResult SwapChain::AcquireNextImage(unsigned int* swapChainIndex)
 {
     //! Get the VkDevice
     VkDevice device = _device->GetDevice();
     //! Wait until the GPU has finished rendering the last frame.
     //! Timeout of 1 second
-    if (!VkCheckError(
-            vkWaitForFences(device, 1, &_renderFence, true, 1000000000)))
-        return false;
-    if (!VkCheckError(vkResetFences(device, 1, &_renderFence)))
-        return false;
+    auto result = vkWaitForFences(device, 1, &_renderFence, true,
+                                  Common::VkSecond(1).Get());
+    VK_CHECK_ERROR(result, "Failed to wait on render fence");
+    //! Must reset fence between uses
+    result = vkResetFences(device, 1, &_renderFence);
+    VK_CHECK_ERROR(result, "Failed to reset render fence")
+    //! Now it is guaranteed that rendering is finished.
+    result =
+        vkAcquireNextImageKHR(device, _swapChain, Common::VkSecond(1).Get(),
+                              _presentSemaphore, nullptr, swapChainIndex);
 
-    if (!VkCheckError(vkAcquireNextImageKHR(device, _swapChain, 1000000000,
-                                            _presentSemaphore, nullptr,
-                                            swapChainIndex)))
-        return false;
-
-    return true;
+    return result;
 }
 
-VkFormat SwapChain::GetImageFormat()
-{
-    return _swapChainImageFormat;
-}
-
-VkSwapchainKHR SwapChain::GetSwapChain()
-{
-    return _swapChain;
-}
 };  // namespace Renderer
