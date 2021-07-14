@@ -19,14 +19,18 @@ class Logger
         Warning = 2,
         Error = 3,
     };
+
     //! \brief Create logging file with given path
     //! \param level Set global logging level
     //! \param stream Set global ostream for logging
     static void Init(Level level, std::ostream* stream);
+
     //! Constructor with Logging level
     explicit Logger(Level level);
+
     //! Default destructor
     ~Logger();
+
     //! Append meesages to buffer and then flushing them when destructor called
     template <typename Type>
     Logger& operator<<(Type&& message)
@@ -34,6 +38,7 @@ class Logger
         _buffer << std::forward<Type>(message);
         return *this;
     }
+
     //! Returns header string combined with localtime and logging level.
     static std::string GetHeader(Level level);
 

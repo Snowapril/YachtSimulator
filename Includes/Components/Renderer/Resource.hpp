@@ -12,8 +12,10 @@ class Resource
     using DeletionType = std::function<void()>;
     //! Default constructor
     Resource();
+
     //! Default virtual destructr
     virtual ~Resource();
+
     //! Ban move, copy allocator and move, copy constructor
     Resource(const Resource&) = delete;
     Resource(Resource&&) = delete;
@@ -23,6 +25,7 @@ class Resource
  protected:
     //! Push the dealloc
     void PushDeletionCall(DeletionType&& deleteCall);
+
     //! Flush the deletion call in the stakc
     void FlushDeletion();
 
