@@ -1,19 +1,23 @@
 #include <vkbootstrap/VkBootstrap.h>
-#include <Components/Common/Macros.hpp>
 #include <Components/Renderer/Device.hpp>
 #include <Components/Renderer/Initializer.hpp>
+#include <Components/Renderer/Utils.hpp>
 #include <Components/Renderer/Window.hpp>
 
 namespace Renderer
 {
-Device::Device(std::shared_ptr<Window> windowPtr) : _window(windowPtr)
+Device::Device(std::shared_ptr<Window> windowPtr)
 {
+    assert(Initialize(windowPtr));
 }
 Device::~Device()
 {
+    FlushDeletion();
 }
-bool Device::Initialize()
+bool Device::Initialize(std::shared_ptr<Window> windowPtr)
 {
+    _window = windowPtr;
+
     if (!InitVulkan())
         return false;
 
@@ -42,8 +46,7 @@ bool Device::InitVulkan()
     _debugMessenger = vkbInstance.debug_messenger;
 
     //! Create window surface with just generated vulkan instance
-    if (!_window->CreateWindowSurface(_instance, &_surface))
-        return false;
+    _window->CreateWindowSurface(_instance, &_surface);
 
     //! Use vkbootstrap to select GPU
     vkb::PhysicalDeviceSelector selector{ vkbInstance };
@@ -88,9 +91,9 @@ bool Device::InitCommands()
             VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
 
     //! Create command pool and check result
-    if (!VkCheckError(vkCreateCommandPool(_device, &commandPoolInfo, nullptr,
-                                          &_commandPool)))
-        return false;
+    VK_CHECK_ERROR(
+        vkCreateCommandPool(_device, &commandPoolInfo, nullptr, &_commandPool),
+        "Failed to create command pool");
 
     //! Allocate the default command buffer that we will use for rendering
     //! Commands will be made from our _commandPool
@@ -101,9 +104,9 @@ bool Device::InitCommands()
                                                VK_COMMAND_BUFFER_LEVEL_PRIMARY);
 
     //! Allocate command buffer from the command pool and check result
-    if (!VkCheckError(vkAllocateCommandBuffers(_device, &commandBufferInfo,
-                                               &_mainCommandBuffer)))
-        return false;
+    VK_CHECK_ERROR(vkAllocateCommandBuffers(_device, &commandBufferInfo,
+                                            &_mainCommandBuffer),
+                   "Failed to allocate main command buffer");
 
     PushDeletionCall([=]() {
         //! Destroying the command pool will destroy all command buffers from it
@@ -111,26 +114,6 @@ bool Device::InitCommands()
     });
 
     return true;
-}
-
-VkInstance Device::GetInstance() const
-{
-    return _instance;
-}
-
-VkDevice Device::GetDevice() const
-{
-    return _device;
-}
-
-VkPhysicalDevice Device::GetPhysicalDevice() const
-{
-    return _chosenGPU;
-}
-
-VkSurfaceKHR Device::GetSurface() const
-{
-    return _surface;
 }
 
 };  // namespace Renderer

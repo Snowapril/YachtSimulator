@@ -6,22 +6,15 @@
 
 namespace Common
 {
-using VkNanoSecond = std::ratio<1>;
-using VkMicroSecond = std::ratio<1000>;
-using VkMilliSecond = std::ratio<1000000>;
-using VkSecond = std::ratio<1000000000>;
-
 template <typename Unit>
 class VkTimeUnit
 {
  public:
-    static_assert(std::is_base_of_v<Unit, std::ratio>,
-                  "Given Unit type must inherit from std::ratio");
     static constexpr size_t kMultiplier =
-        static_cast<size_t>(Unit::num / Unit::ratio);
+        static_cast<size_t>(Unit::num / Unit::den);
 
     constexpr VkTimeUnit() = default;
-    explicit constexpr VkTimeUnit(size_t time) : _value(time){};
+    explicit constexpr VkTimeUnit(size_t time) : _value(time * kMultiplier){};
 
     template <typename OtherUnit>
     explicit constexpr VkTimeUnit(VkTimeUnit<OtherUnit> other)
@@ -39,6 +32,11 @@ class VkTimeUnit
  private:
     size_t _value;
 };
+//! Type aliasing for frequently used time units
+using VkNanoSecond = VkTimeUnit<std::ratio<1>>;
+using VkMicroSecond = VkTimeUnit<std::ratio<1000>>;
+using VkMilliSecond = VkTimeUnit<std::ratio<1000000>>;
+using VkSecond = VkTimeUnit<std::ratio<1000000000>>;
 };  // namespace Common
 
 #endif  //! LOGGER_HPP

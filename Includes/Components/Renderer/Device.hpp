@@ -13,18 +13,48 @@ class Device : public Resource
  public:
     //! Constructor with pre-defined window instance.
     Device(std::shared_ptr<Window> windowPtr);
+
     //! Default destructor
     ~Device();
+
     //! Initialize vulkan instance & device
-    bool Initialize();
+    bool Initialize(std::shared_ptr<Window> windowPtr);
+
     //! Returns vulkan instance handle
-    VkInstance GetInstance() const;
+    inline VkInstance GetInstance() const
+    {
+        return _instance;
+    }
+
     //! Returns vulkan device handle
-    VkDevice GetDevice() const;
+    inline VkDevice GetDevice() const
+    {
+        return _device;
+    }
+
     //! Returns vulkan physical device handle
-    VkPhysicalDevice GetPhysicalDevice() const;
+    inline VkPhysicalDevice GetPhysicalDevice() const
+    {
+        return _chosenGPU;
+    }
+
     //! Returns window surface handle
-    VkSurfaceKHR GetSurface() const;
+    inline VkSurfaceKHR GetSurface() const
+    {
+        return _surface;
+    }
+
+    //! Returns main command buffer
+    inline VkCommandBuffer GetCommandBuffer() const
+    {
+        return _mainCommandBuffer;
+    }
+
+    //! Returns main command buffer
+    inline VkQueue GetGraphicsQueue() const
+    {
+        return _graphicsQueue;
+    }
 
  protected:
     VkInstance _instance;
@@ -43,6 +73,7 @@ class Device : public Resource
  private:
     //! Initialize vulkan instance, physical device and logical device
     bool InitVulkan();
+
     //! Initialize command pool
     bool InitCommands();
 };
