@@ -42,3 +42,5 @@ jobs:
       run: mkdir build && cd build && cmake .. -DCMAKE_GENERATOR_PLATFORM=x64 -DCMAKE_BUILD_TYPE=Release
     - name: Build
       run: cd build && MSBuild.exe YachtSimulator.sln /p:Configuration=Release
+    - name: Run Unit Test
+      run: /a/YachtSimulator/YachtSimulator/build/bin/Release/UnitTests.exe

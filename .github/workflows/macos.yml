@@ -56,3 +56,5 @@ jobs:
       run: mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release
     - name: Build
       run: cd build && make
+    - name: Run Unit Test
+      run: /Users/runner/work/YachtSimulator/YachtSimulator/build/bin/UnitTests
