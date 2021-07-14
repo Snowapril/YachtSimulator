@@ -9,7 +9,7 @@ Resource::Resource()
 
 Resource::~Resource()
 {
-    FlushDeletion();
+    //! Do nothing
 }
 
 void Resource::PushDeletionCall(DeletionType&& deleteCall)
@@ -19,7 +19,7 @@ void Resource::PushDeletionCall(DeletionType&& deleteCall)
 
 void Resource::FlushDeletion()
 {
-    while (_deletionStack.empty())
+    while (!_deletionStack.empty())
     {
         auto& deletionCall = _deletionStack.top();
         deletionCall();
