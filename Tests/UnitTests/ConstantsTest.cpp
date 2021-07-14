@@ -1,9 +1,9 @@
 #include <doctest/doctest.h>
 #include <Components/Common/Constants.hpp>
-using namespace Common;
 
 TEST_CASE("VkTimeUnit Constants Test")
 {
-    bool result = true;
-    CHECK(result == true);
+    size_t milli = Common::VkMilliSecond(1).Get();
+    size_t second = Common::VkSecond(1).Get();
+    CHECK(milli * 1000 == second);
 }
