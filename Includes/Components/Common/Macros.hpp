@@ -25,18 +25,4 @@ typedef SSIZE_T ssize_t;
 #define UNUSED_VARIABLE(x) ((void)x)
 #endif
 
-template <typename Result>
-inline bool VkCheckError(Result result)
-{
-    if (result)
-    {
-        LOG_ERROR << result;
-        return false;
-    }
-    else
-    {
-        return true;
-    }
-}
-
 #endif  //! end of Macros.hpp
