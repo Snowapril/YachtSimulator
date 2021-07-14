@@ -186,6 +186,55 @@ bool SwapChain::InitSyncStructures()
     return true;
 }
 
+VkResult SwapChain::SubmitCommandBuffer(VkCommandBuffer cmd,
+                                    unsigned int imageIndex)
+{
+    //! Prepare the submission to the queue
+    //! We want to wait on the _presentSemaphore, as that semaphore is signaled
+    //! when the swapchain is ready We will signal the _renderSemaphore, to
+    //! signal that rendering has finished
+    VkSubmitInfo submit = {};
+    submit.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    submit.pNext = nullptr;
+
+    VkPipelineStageFlags waitStage =
+        VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    submit.pWaitDstStageMask = &waitStage;
+
+    submit.waitSemaphoreCount = 1;
+    submit.pWaitSemaphores = &_presentSemaphore;
+
+    submit.signalSemaphoreCount = 1;
+    submit.pSignalSemaphores = &_renderSemaphore;
+
+    submit.commandBufferCount = 1;
+    submit.pCommandBuffers = &cmd;
+
+    //! Submit the command buffer to the queue and execute it
+    //! _renderFence will now block until the graphic commands finish execution
+    VK_CHECK_ERROR(
+        vkQueueSubmit(_device->GetGraphicsQueue(), 1, &submit, _renderFence),
+        "Failed to submit command buffer to the queue");
+
+    //! This will put the image we just rendered into the visible window
+    //! We want to wait on the _renderSemaphore for that,
+    //! as it's necessary that drawing commands have finished before the image
+    //! is displayed to the user
+    VkPresentInfoKHR presentInfo = {};
+    presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+    presentInfo.pNext = nullptr;
+
+    presentInfo.swapchainCount = 1;
+    presentInfo.pSwapchains = &_swapChain;
+
+    presentInfo.waitSemaphoreCount = 1;
+    presentInfo.pWaitSemaphores = &_renderSemaphore;
+
+    presentInfo.pImageIndices = &imageIndex;
+
+    return vkQueuePresentKHR(_device->GetGraphicsQueue(), &presentInfo);
+}
+
 VkResult SwapChain::AcquireNextImage(unsigned int* swapChainIndex)
 {
     //! Get the VkDevice

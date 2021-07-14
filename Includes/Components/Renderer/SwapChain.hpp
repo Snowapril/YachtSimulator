@@ -22,6 +22,10 @@ class SwapChain : public Resource
     //! Initialize swapchain
     bool Initialize(std::shared_ptr<Device> devicePtr, VkExtent2D extent);
 
+    //! Submit given command buffer to graphics queue and
+    //! present rendered image to swapchain
+    VkResult SubmitCommandBuffer(VkCommandBuffer cmd, unsigned int imageIndex);
+
     //! Acquire next swapchain image index
     //! This call will make CPU threads blocked
     VkResult AcquireNextImage(unsigned int* swapChainIndex);
