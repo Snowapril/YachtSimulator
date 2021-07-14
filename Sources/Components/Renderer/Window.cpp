@@ -1,5 +1,5 @@
 #include <Components/Common/Logger.hpp>
-#include <Components/Common/Macros.hpp>
+#include <Components/Renderer/Utils.hpp>
 #include <Components/Renderer/Window.hpp>
 #include <cassert>
 
@@ -8,11 +8,6 @@
 
 namespace Renderer
 {
-Window::Window()
-{
-    //! Do nothing
-}
-
 Window::Window(int width, int height, const std::string& title)
 {
     assert(Initialize(width, height, title));
@@ -20,11 +15,15 @@ Window::Window(int width, int height, const std::string& title)
 
 Window::~Window()
 {
-    //! Do nothing
+    FlushDeletion();
 }
 
 bool Window::Initialize(int width, int height, const std::string& title)
 {
+    _screenSize = { static_cast<unsigned int>(width),
+                    static_cast<unsigned int>(height) };
+    _title = title;
+
     if (!glfwInit())
     {
         LOG_ERROR << "GLFW initialization failed";
@@ -33,31 +32,30 @@ bool Window::Initialize(int width, int height, const std::string& title)
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-    _window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+    _window = glfwCreateWindow(static_cast<int>(_screenSize.width),
+                               static_cast<int>(_screenSize.height),
+                               _title.c_str(), nullptr, nullptr);
 
     //! Push glfw destroy call to resource deallocation stack
     PushDeletionCall([=]() { glfwDestroyWindow(_window); });
 
-    //! Set also title member variable
-    _title = title;
-
     return true;
 }
 
-bool Window::CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface)
+void Window::CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface)
 {
-    return VkCheckError(
-        glfwCreateWindowSurface(instance, _window, nullptr, surface));
+    VK_CHECK_ERROR(glfwCreateWindowSurface(instance, _window, nullptr, surface),
+                   "Failed to create window surface");
 }
 
-VkExtent2D Window::GetScreenSize() const
+bool Window::WindowShouldClose()
 {
-    return _screenSize;
+    return glfwWindowShouldClose(_window) == GLFW_TRUE;
 }
 
-std::string Window::GetWindowTitle() const
+void Window::PollEvents()
 {
-    return _title;
+    glfwPollEvents();
 }
 
 };  // namespace Renderer
