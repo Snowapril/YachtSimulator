@@ -2,7 +2,7 @@ name: Window
 
 on:
   push:
-    branches: [ main, refactor ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
