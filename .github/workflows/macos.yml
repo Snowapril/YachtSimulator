@@ -48,10 +48,10 @@ jobs:
         sudo xcode-select -switch /Applications/Xcode_${{ matrix.version }}.app
         echo "CC=clang" >> $GITHUB_ENV
         echo "CXX=clang++" >> $GITHUB_ENV
-        export VULKAN_SDK="${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/x86_64"
-        export PATH=$VULKAN_SDK/bin:$PATH
-        export LD_LIBRARY_PATH=$VULKAN_SDK/lib:$LD_LIBRARY_PATH
-        export VK_LAYER_PATH=$VULKAN_SDK/etc/explicit_layer.d
+        echo "VULKAN_SDK=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/x86_64" >> $GITHUB_ENV
+        echo "PATH=$VULKAN_SDK/bin:$PATH" >> $GITHUB_ENV
+        echo "LD_LIBRARY_PATH=$VULKAN_SDK/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+        echo "VK_LAYER_PATH=$VULKAN_SDK/etc/explicit_layer.d" >> $GITHUB_ENV
     - name: Configure Build
       run: mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=${{env.build_type}}
     - name: Build

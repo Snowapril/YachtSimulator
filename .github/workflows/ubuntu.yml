@@ -53,7 +53,7 @@ jobs:
       run: |
         sudo add-apt-repository ppa:ubuntu-toolchain-r/test
         sudo apt-get update
-        sudo apt-get install xorg-dev build-essential
+        sudo apt-get install xorg-dev build-essential libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
         if [ "${{ matrix.compiler }}" = "gcc" ]; then
           sudo apt-get install cmake gcc-${{ matrix.version }} g++-${{ matrix.version }}
         else
@@ -71,12 +71,11 @@ jobs:
     - name: Configure CMake
       shell: bash
       run: |
-        export VULKAN_SDK="${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/x86_64"
-        export VK_SDK_PATH="${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/x86_64"
-        export PATH="$VULKAN_SDK/bin:$PATH"
-        export LD_LIBRARY_PATH="$VULKAN_SDK/lib:$LD_LIBRARY_PATH"
-        export VK_LAYER_PATH="$VULKAN_SDK/etc/vulkan/explicit_layer.d"
-        ls ${VULKAN_SDK}
+        echo "VULKAN_SDK=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/x86_64" >> $GITHUB_ENV
+        echo "VK_SDK_PATH=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/x86_64" >> $GITHUB_ENV
+        echo "PATH=$VULKAN_SDK/bin:$PATH" >> $GITHUB_ENV
+        echo "LD_LIBRARY_PATH=$VULKAN_SDK/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+        echo "VK_LAYER_PATH=$VULKAN_SDK/etc/vulkan/explicit_layer.d" >> $GITHUB_ENV
     - name: Configure Build
       run: mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=${{env.build_type}}
     - name: Build

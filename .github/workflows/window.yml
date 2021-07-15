@@ -31,11 +31,11 @@ jobs:
     - name: Configure CMake
       shell: bash
       run: |
-        export VULKAN_SDK="${{ env.vulkan_sdk }}/${{ env.vulkan_version }}"
-        export VK_SDK_PATH="${{ env.vulkan_sdk }}/${{ env.vulkan_version }}"
-        export PATH="$VULKAN_SDK/Bin:$PATH"
-        export LD_LIBRARY_PATH="$VULKAN_SDK/Lib:$LD_LIBRARY_PATH"
-        export VK_LAYER_PATH="$VULKAN_SDK/explicit_layer.d"
+        echo "VULKAN_SDK=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}" >> $GITHUB_ENV
+        echo "VK_SDK_PATH=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}" >> $GITHUB_ENV
+        echo "PATH=$VULKAN_SDK/Bin:$PATH" >> $GITHUB_ENV
+        echo "LD_LIBRARY_PATH=$VULKAN_SDK/Lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+        echo "VK_LAYER_PATH=$VULKAN_SDK/explicit_layer.d" >> $GITHUB_ENV
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
     - name: Configure Build
