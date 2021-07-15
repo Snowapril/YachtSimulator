@@ -33,6 +33,8 @@ jobs:
       run: |
         echo "VULKAN_SDK=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}" >> $GITHUB_ENV
         echo "VK_SDK_PATH=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}" >> $GITHUB_ENV
+        echo "${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/Bin" >> $GITHUB_PATH
+        echo "LD_LIBRARY_PATH=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/Lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
     - name: Configure Build
       run: mkdir build && cd build && cmake -DCMAKE_GENERATOR_PLATFORM=x64 -DCMAKE_BUILD_TYPE=${{env.build_type}} ..
     - name: Add MSBuild to PATH
