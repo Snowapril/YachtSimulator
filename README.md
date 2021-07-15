@@ -2,10 +2,11 @@
 
 [![CodeFactor](https://www.codefactor.io/repository/github/snowapril/YachtSimulator/badge)](https://www.codefactor.io/repository/github/snowapril/YachtSimulator)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/65172c3bc18b4398b0cd7c42954e2483)](https://www.codacy.com/gh/Snowapril/YachtSimulator/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Snowapril/YachtSimulator&amp;utm_campaign=Badge_Grade)
-![Ubuntu github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/ubuntu.yml/badge.svg?branch=main)
-![Window github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/window.yml/badge.svg?branch=main)
-![MacOS github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/macos.yml/badge.svg?branch=main)
-![pre-commit github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/pre-commit.yml/badge.svg?branch=main)
+[![Ubuntu github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/ubuntu.yml/badge.svg?branch=main)](https://github.com/snowapril/YachtSimulator/actions)
+[![Window github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/window.yml/badge.svg?branch=main)](https://github.com/snowapril/YachtSimulator/actions)
+[![MacOS github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/macos.yml/badge.svg?branch=main)](https://github.com/snowapril/YachtSimulator/actions)
+[![pre-commit github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/pre-commit.yml/badge.svg?branch=main)](https://github.com/snowapril/YachtSimulator/actions)
+[![codecov](https://codecov.io/gh/Snowapril/YachtSimulator/branch/main/graph/badge.svg?token=DEXQCY7L76)](https://codecov.io/gh/Snowapril/YachtSimulator)
 
 ## reference
 
