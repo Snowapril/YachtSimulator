@@ -101,7 +101,7 @@ add_subdirectory(Libraries/vkbootstrap)
 add_subdirectory(Libraries/volk)
 
 # find glslangValidator program
-find_program(GLSL_VALIDATOR glslangValidator HINTS /usr/bin /usr/local/bin $ENV{VULKAN_SDK}/Bin/ $ENV{VULKAN_SDK}/Bin32/)
+find_program(GLSL_VALIDATOR glslangValidator HINTS /usr/bin /usr/local/bin $ENV{VULKAN_SDK}/bin/ $ENV{VULKAN_SDK}/Bin/ $ENV{VULKAN_SDK}/Bin32/)
 
 # find all the shader files under the shaders folder.
 file(GLOB_RECURSE GLSL_SOURCE_FILES
