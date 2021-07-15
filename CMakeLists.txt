@@ -43,7 +43,7 @@ endif()
 
 # verbose printing test in CI build
 message(STATUS "Build system name : ${CMAKE_SYSTEM_NAME}")
-message(STATUS ${Vulkan_Found})
+message(STATUS ${VULKAN_PATH})
 message(STATUS ${Vulkan_INCLUDE_DIRS})
 message(STATUS ${Vulkan_LIBRARY})
 
@@ -60,6 +60,10 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	# Link directory for vulkan
 	link_directories(${VULKAN_PATH}/../lib)
 else()
+# Include Vulkan header files from Vulkan SDK
+	include_directories(AFTER ${Vulkan_INCLUDE_DIRS})
+	# Link directory for vulkan
+	link_directories(${VULKAN_PATH}/../lib)
 endif()
 
 # Includes
@@ -72,7 +76,6 @@ include_directories(Libraries/tinygltf)
 include_directories(Libraries/tinyobjloader)
 include_directories(Libraries/vkbootstrap)
 include_directories(Libraries/vma)
-include_directories(Libraries/volk)
 
 # Set enable output of compile commands during generation
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -98,10 +101,9 @@ add_subdirectory(Libraries/glfw)
 add_subdirectory(Libraries/imgui)
 add_subdirectory(Libraries/tinyobjloader)
 add_subdirectory(Libraries/vkbootstrap)
-add_subdirectory(Libraries/volk)
 
 # find glslangValidator program
-find_program(GLSL_VALIDATOR glslangValidator HINTS /usr/bin /usr/local/bin $ENV{VULKAN_SDK}/Bin/ $ENV{VULKAN_SDK}/Bin32/)
+find_program(GLSL_VALIDATOR glslangValidator HINTS /usr/bin /usr/local/bin $ENV{VULKAN_SDK}/bin/ $ENV{VULKAN_SDK}/Bin/ $ENV{VULKAN_SDK}/Bin32/)
 
 # find all the shader files under the shaders folder.
 file(GLOB_RECURSE GLSL_SOURCE_FILES

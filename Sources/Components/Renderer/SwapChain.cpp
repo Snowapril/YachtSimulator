@@ -7,7 +7,8 @@ namespace Renderer
 {
 SwapChain::SwapChain(std::shared_ptr<Device> devicePtr, VkExtent2D extent)
 {
-    assert(Initialize(devicePtr, extent));
+    [[maybe_unused]] bool initResult = Initialize(devicePtr, extent);
+    assert(initResult == true);
 }
 
 SwapChain::~SwapChain()

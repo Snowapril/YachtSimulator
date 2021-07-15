@@ -18,6 +18,8 @@ jobs:
         include:
           - name: "Windows Server 2019 + Visual Studio 2019"
             os: windows-2019
+          - name: "Windows Server 2016 + Visual Studio 2017"
+            os: windows-2016
 
     runs-on: ${{matrix.os}}
     name: ${{matrix.name}}
@@ -31,16 +33,15 @@ jobs:
     - name: Configure CMake
       shell: bash
       run: |
-        export VULKAN_SDK="${{ env.vulkan_sdk }}/${{ env.vulkan_version }}"
-        export VK_SDK_PATH="${{ env.vulkan_sdk }}/${{ env.vulkan_version }}"
-        export PATH="$VULKAN_SDK/Bin:$PATH"
-        export LD_LIBRARY_PATH="$VULKAN_SDK/Lib:$LD_LIBRARY_PATH"
-        export VK_LAYER_PATH="$VULKAN_SDK/explicit_layer.d"
+        echo "VULKAN_SDK=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}" >> $GITHUB_ENV
+        echo "VK_SDK_PATH=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}" >> $GITHUB_ENV
+        echo "${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/Bin" >> $GITHUB_PATH
+        echo "LD_LIBRARY_PATH=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/Lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+    - name: Configure Build
+      run: mkdir build && cd build && cmake -DCMAKE_GENERATOR_PLATFORM=x64 -DCMAKE_BUILD_TYPE=${{env.build_type}} ..
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
-    - name: Configure Build
-      run: mkdir build && cd build && cmake .. -DCMAKE_GENERATOR_PLATFORM=x64 -DCMAKE_BUILD_TYPE=Release
     - name: Build
-      run: cd build && MSBuild.exe YachtSimulator.sln /p:Configuration=Release
+      run: cd build && MSBuild.exe YachtSimulator.sln /p:Configuration=${{env.build_type}}
     - name: Run Unit Test
-      run: /a/YachtSimulator/YachtSimulator/build/bin/Release/UnitTests.exe
+      run: /a/YachtSimulator/YachtSimulator/build/bin/${{env.build_type}}/UnitTests.exe

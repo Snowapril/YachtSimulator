@@ -10,12 +10,15 @@ namespace Renderer
 Renderer::Renderer(std::shared_ptr<Window> windowPtr,
                    std::shared_ptr<Device> devicePtr)
 {
-    assert(Initialize(windowPtr, devicePtr));
+    [[maybe_unused]] bool initResult = Initialize(windowPtr, devicePtr);
+    assert(initResult == true);
 }
+
 Renderer::~Renderer()
 {
     FlushDeletion();
 }
+
 bool Renderer::Initialize(std::shared_ptr<Window> windowPtr,
                           std::shared_ptr<Device> devicePtr)
 {
@@ -27,6 +30,7 @@ bool Renderer::Initialize(std::shared_ptr<Window> windowPtr,
 
     return true;
 }
+
 void Renderer::RecreateSwapChain(VkExtent2D extent)
 {
     if (_swapChain)
@@ -45,6 +49,7 @@ void Renderer::RecreateSwapChain(VkExtent2D extent)
         _swapChain = std::make_unique<SwapChain>(_device, extent);
     }
 }
+
 VkCommandBuffer Renderer::BeginFrame()
 {
     auto result = _swapChain->AcquireNextImage(&_currentImageIndex);
@@ -76,6 +81,7 @@ VkCommandBuffer Renderer::BeginFrame()
                    "Failed to reset command buffer")
     return cmd;
 }
+
 void Renderer::EndFrame()
 {
     //! Get current frame command buffer from the device
@@ -86,6 +92,7 @@ void Renderer::EndFrame()
     VK_CHECK_ERROR(_swapChain->SubmitCommandBuffer(cmd, _currentImageIndex),
                    "Failed to submit command buffer");
 }
+
 void Renderer::BeginSwapChainRenderPass(VkCommandBuffer commandBuffer)
 {
     static int testFrame = 0;
@@ -117,8 +124,10 @@ void Renderer::BeginSwapChainRenderPass(VkCommandBuffer commandBuffer)
     vkCmdBeginRenderPass(commandBuffer, &renderPassBeginInfo,
                          VK_SUBPASS_CONTENTS_INLINE);
 }
+
 void Renderer::EndSwapChainRenderPass(VkCommandBuffer commandBuffer)
 {
     vkCmdEndRenderPass(commandBuffer);
 }
+
 };  // namespace Renderer

@@ -10,7 +10,8 @@ namespace Renderer
 {
 Window::Window(int width, int height, const std::string& title)
 {
-    assert(Initialize(width, height, title));
+    [[maybe_unused]] bool initResult = Initialize(width, height, title);
+    assert(initResult == true);
 }
 
 Window::~Window()
