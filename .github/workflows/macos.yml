@@ -10,8 +10,8 @@ jobs:
   build-macos:
     env:
       build_type: "Release"
-      vulkan_sdk: "$GITHUB_WORKSPACE/vulkan_sdk/"
       vulkan_version: "1.2.162.1"
+      vulkan_sdk: "/Volumes/vulkansdk-macos-1.2.162.1"
     strategy:
       fail-fast: false
       matrix:
@@ -34,8 +34,6 @@ jobs:
         submodules: true
     - name: Install Vulkan SDK
       run: |
-        brew tap apenngrace/homebrew-vulkan
-        brew install --cask vulkan-sdk --verbose
         # Download Vulkan SDK
         curl -LS -o vulkansdk.dmg \
           https://sdk.lunarg.com/sdk/download/${{ env.vulkan_version }}/mac/vulkansdk-macos-${{ env.vulkan_version }}.dmg
@@ -48,11 +46,11 @@ jobs:
         sudo xcode-select -switch /Applications/Xcode_${{ matrix.version }}.app
         echo "CC=clang" >> $GITHUB_ENV
         echo "CXX=clang++" >> $GITHUB_ENV
-        echo "VULKAN_SDK=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/macOS" >> $GITHUB_ENV
-        echo "DYLD_LIBRARY_PATH=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/macOS/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
-        echo "VK_ICD_FILENAMES=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/macOS/etc/vulkan/icd.d/MoltenVK_icd.json" >> $GITHUB_ENV
-        echo "${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/macOS/bin" >> $GITHUB_PATH
-        echo "LD_LIBRARY_PATH=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/macOS/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+        echo "VULKAN_SDK=${{ env.vulkan_sdk }}/macOS" >> $GITHUB_ENV
+        echo "DYLD_LIBRARY_PATH=${{ env.vulkan_sdk }}/macOS/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
+        echo "VK_ICD_FILENAMES=${{ env.vulkan_sdk }}/macOS/etc/vulkan/icd.d/MoltenVK_icd.json" >> $GITHUB_ENV
+        echo "${{ env.vulkan_sdk }}/macOS/bin" >> $GITHUB_PATH
+        echo "LD_LIBRARY_PATH=${{ env.vulkan_sdk }}/macOS/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
     - name: Configure Build
       run: mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=${{env.build_type}}
     - name: Build
