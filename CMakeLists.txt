@@ -43,7 +43,7 @@ endif()
 
 # verbose printing test in CI build
 message(STATUS "Build system name : ${CMAKE_SYSTEM_NAME}")
-message(STATUS ${Vulkan_Found})
+message(STATUS ${VULKAN_PATH})
 message(STATUS ${Vulkan_INCLUDE_DIRS})
 message(STATUS ${Vulkan_LIBRARY})
 
@@ -60,6 +60,10 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 	# Link directory for vulkan
 	link_directories(${VULKAN_PATH}/../lib)
 else()
+# Include Vulkan header files from Vulkan SDK
+	include_directories(AFTER ${Vulkan_INCLUDE_DIRS})
+	# Link directory for vulkan
+	link_directories(${VULKAN_PATH}/../lib)
 endif()
 
 # Includes
