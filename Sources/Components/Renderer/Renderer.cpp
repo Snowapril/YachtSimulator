@@ -3,6 +3,7 @@
 #include <Components/Renderer/Utils.hpp>
 #include <Components/Renderer/Window.hpp>
 #include <cassert>
+#include <cmath>
 
 namespace Renderer
 {
