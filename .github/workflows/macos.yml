@@ -53,7 +53,7 @@ jobs:
         export LD_LIBRARY_PATH=$VULKAN_SDK/lib:$LD_LIBRARY_PATH
         export VK_LAYER_PATH=$VULKAN_SDK/etc/explicit_layer.d
     - name: Configure Build
-      run: mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=Release
+      run: mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=${{env.build_type}}
     - name: Build
       run: cd build && make
     - name: Run Unit Test

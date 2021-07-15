@@ -36,13 +36,11 @@ jobs:
         export PATH="$VULKAN_SDK/Bin:$PATH"
         export LD_LIBRARY_PATH="$VULKAN_SDK/Lib:$LD_LIBRARY_PATH"
         export VK_LAYER_PATH="$VULKAN_SDK/explicit_layer.d"
-        echo ${VULKAN_SDK}
-        ls ${VULKAN_SDK}
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
     - name: Configure Build
-      run: mkdir build && cd build && cmake .. -DCMAKE_GENERATOR_PLATFORM=x64 -DCMAKE_BUILD_TYPE=Release
+      run: mkdir build && cd build && cmake .. -DCMAKE_GENERATOR_PLATFORM=x64 -DCMAKE_BUILD_TYPE=${{env.build_type}}
     - name: Build
-      run: cd build && MSBuild.exe YachtSimulator.sln /p:Configuration=Release
+      run: cd build && MSBuild.exe YachtSimulator.sln /p:Configuration=${{env.build_type}}
     - name: Run Unit Test
-      run: /a/YachtSimulator/YachtSimulator/build/bin/Release/UnitTests.exe
+      run: /a/YachtSimulator/YachtSimulator/build/bin/${{env.build_type}}/UnitTests.exe
