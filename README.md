@@ -1,7 +1,7 @@
 # YachtSimulator
 
 [![CodeFactor](https://www.codefactor.io/repository/github/snowapril/YachtSimulator/badge)](https://www.codefactor.io/repository/github/snowapril/YachtSimulator)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/755ac32c60cd4fdd80934f7de453838d)](https://www.codacy.com/gh/Snowapril/YachtSimulator/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Snowapril/YachtSimulator&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/65172c3bc18b4398b0cd7c42954e2483)](https://www.codacy.com/gh/Snowapril/YachtSimulator/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Snowapril/YachtSimulator&amp;utm_campaign=Badge_Grade)
 ![Ubuntu github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/ubuntu.yml/badge.svg?branch=main)
 ![Window github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/window.yml/badge.svg?branch=main)
 ![MacOS github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/macos.yml/badge.svg?branch=main)
