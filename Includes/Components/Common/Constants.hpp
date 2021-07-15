@@ -1,6 +1,7 @@
 #ifndef CONSTANTS_HPP
 #define CONSTANTS_HPP
 
+#include <cstddef>
 #include <ratio>
 #include <type_traits>
 
