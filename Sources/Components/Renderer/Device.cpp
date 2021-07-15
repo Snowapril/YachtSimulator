@@ -8,7 +8,7 @@ namespace Renderer
 {
 Device::Device(std::shared_ptr<Window> windowPtr)
 {
-    bool initResult = Initialize(windowPtr);
+    [[maybe_unused]] bool initResult = Initialize(windowPtr);
     assert(initResult == true);
 }
 
