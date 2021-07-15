@@ -4,9 +4,9 @@ repos:
     rev: python
     hooks:
       - id: clang-format
-        args: [-i -style=file]
+        args: [--style=file]
       - id: clang-tidy
-        args: [-checks=clang-diagnostic-return-type]
+        args: [--fix-errors -checks=*]
       - id: oclint
         args: [-enable-clang-static-analyzer, -enable-global-analysis]
       - id: uncrustify
