@@ -72,7 +72,6 @@ include_directories(Libraries/tinygltf)
 include_directories(Libraries/tinyobjloader)
 include_directories(Libraries/vkbootstrap)
 include_directories(Libraries/vma)
-include_directories(Libraries/volk)
 
 # Set enable output of compile commands during generation
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -98,7 +97,6 @@ add_subdirectory(Libraries/glfw)
 add_subdirectory(Libraries/imgui)
 add_subdirectory(Libraries/tinyobjloader)
 add_subdirectory(Libraries/vkbootstrap)
-add_subdirectory(Libraries/volk)
 
 # find glslangValidator program
 find_program(GLSL_VALIDATOR glslangValidator HINTS /usr/bin /usr/local/bin $ENV{VULKAN_SDK}/bin/ $ENV{VULKAN_SDK}/Bin/ $ENV{VULKAN_SDK}/Bin32/)
