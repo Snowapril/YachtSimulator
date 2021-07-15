@@ -11,10 +11,12 @@ Device::Device(std::shared_ptr<Window> windowPtr)
     bool initResult = Initialize(windowPtr);
     assert(initResult == true);
 }
+
 Device::~Device()
 {
     FlushDeletion();
 }
+
 bool Device::Initialize(std::shared_ptr<Window> windowPtr)
 {
     _window = windowPtr;
