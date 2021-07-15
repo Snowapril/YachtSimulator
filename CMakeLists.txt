@@ -41,9 +41,13 @@ if(NOT Vulkan_FOUND)
 	endif()
 endif()
 
-# vulkan-1 library for build Vulkan application.
-# set(VULKAN_LIB_LIST "vulkan-1")
+# verbose printing test in CI build
+message(STATUS "Build system name : ${CMAKE_SYSTEM_NAME}")
+message(STATUS ${Vulkan_Found})
+message(STATUS ${Vulkan_INCLUDE_DIRS})
+message(STATUS ${Vulkan_LIBRARY})
 
+# vulkan library for build Vulkan application.
 if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	# Include Vulkan header files from Vulkan SDK
 	include_directories(AFTER ${VULKAN_PATH}/Include)
@@ -51,6 +55,10 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 	# Link directory for vulkan-1
 	link_directories(${VULKAN_PATH}/Bin;${VULKAN_PATH}/Lib;)
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+	# Include Vulkan header files from Vulkan SDK
+	include_directories(AFTER ${Vulkan_INCLUDE_DIRS})
+	# Link directory for vulkan
+	link_directories(${VULKAN_PATH}/../lib)
 else()
 endif()
 
