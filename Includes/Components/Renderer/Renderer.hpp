@@ -39,14 +39,13 @@ class Renderer : public Resource
     //! Finalize the swapchain renderpass
     void EndSwapChainRenderPass(VkCommandBuffer commandBuffer);
 
- protected:
+ private:
     std::shared_ptr<Device> _device;
     std::shared_ptr<Window> _window;
     std::unique_ptr<SwapChain> _swapChain;
     VkClearColorValue _clearColor{ { 0.0f, 0.0f, 0.0f, 1.0f } };
     unsigned int _currentImageIndex{ 0 };
 
- private:
 };
 };  // namespace Renderer
 

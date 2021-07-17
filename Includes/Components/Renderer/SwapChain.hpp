@@ -59,7 +59,16 @@ class SwapChain : public Resource
         return _framebuffers[index];
     }
 
- protected:
+ private:
+    //! Initialize default renderpass with only one color attachment
+    bool InitDefaultRenderPass();
+
+    //! Create framebuffer with default renderpass
+    bool InitFramebuffers();
+
+    //! Initialize several synchronization structures
+    bool InitSyncStructures();
+
     VkSwapchainKHR _swapChain;
     VkFormat _swapChainImageFormat;
     VkRenderPass _renderPass;
@@ -70,16 +79,6 @@ class SwapChain : public Resource
     VkExtent2D _extent;
     VkSemaphore _presentSemaphore, _renderSemaphore;
     VkFence _renderFence;
-
- private:
-    //! Initialize default renderpass with only one color attachment
-    bool InitDefaultRenderPass();
-
-    //! Create framebuffer with default renderpass
-    bool InitFramebuffers();
-
-    //! Initialize several synchronization structures
-    bool InitSyncStructures();
 };
 };  // namespace Renderer
 
