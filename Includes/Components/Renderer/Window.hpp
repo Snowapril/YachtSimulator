@@ -46,12 +46,10 @@ class Window : public Resource
         return _title;
     }
 
- protected:
+ private:
     VkExtent2D _screenSize{ 0, 0 };
     GLFWwindow *_window = nullptr;
     std::string _title;
-
- private:
 };
 };  // namespace Renderer
 

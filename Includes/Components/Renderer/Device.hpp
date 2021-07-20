@@ -56,7 +56,13 @@ class Device : public Resource
         return _graphicsQueue;
     }
 
- protected:
+ private:
+    //! Initialize vulkan instance, physical device and logical device
+    bool InitVulkan();
+
+    //! Initialize command pool
+    bool InitCommands();
+
     VkInstance _instance;
     VkDebugUtilsMessengerEXT _debugMessenger;
     VkPhysicalDevice _chosenGPU;
@@ -69,13 +75,6 @@ class Device : public Resource
     VkCommandBuffer _mainCommandBuffer;
 
     std::shared_ptr<Window> _window;
-
- private:
-    //! Initialize vulkan instance, physical device and logical device
-    bool InitVulkan();
-
-    //! Initialize command pool
-    bool InitCommands();
 };
 };  // namespace Renderer
 

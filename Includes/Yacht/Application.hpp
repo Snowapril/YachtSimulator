@@ -26,12 +26,10 @@ class Application
     //! Run main loop of the Yacht Application
     void Run();
 
- protected:
+ private:
     std::shared_ptr<Renderer::Window> _window;
     std::shared_ptr<Renderer::Device> _device;
     std::shared_ptr<Renderer::Renderer> _renderer;
-
- private:
 };
 
 #endif  //! APPLICATION_HPP
