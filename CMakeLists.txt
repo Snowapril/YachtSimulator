@@ -21,49 +21,22 @@ message(STATUS "Attempting auto locate Vulkan using CMake......")
 # Include directory path - 'Vulkan_INCLUDE_DIRS' and 'Vulkan_LIBRARY' with required libraries.
 find_package(Vulkan REQUIRED)
 
-# Try extracting VulkanSDK path from ${Vulkan_INCLUDE_DIRS}
-if (NOT ${Vulkan_INCLUDE_DIRS} STREQUAL "")
-	set(VULKAN_PATH ${Vulkan_INCLUDE_DIRS})
-	STRING(REGEX REPLACE "/Include" "" VULKAN_PATH ${VULKAN_PATH})
+if (UNIX AND NOT APPLE)
+	set(LINUX TRUE)
 endif()
-	 
-if(NOT Vulkan_FOUND)
-	# CMake may fail to locate the libraries but could be able to 
-	# provide some path in Vulkan SDK include directory variable
-	# 'Vulkan_INCLUDE_DIRS', try to extract path from this.
-	message(STATUS "Failed to locate Vulkan SDK, retrying again...")
-	if(EXISTS "${VULKAN_PATH}")
-		message(STATUS "Successfully located the Vulkan SDK: ${VULKAN_PATH}")
-	else()
-		message("Error: Unable to locate Vulkan SDK. Please turn off auto locate option by specifying 'AUTO_LOCATE_VULKAN' as 'OFF'")
-		message("and specify manually path using 'VULKAN_SDK' and 'VULKAN_VERSION' variables in the CMakeLists.txt.")
-		return()
+
+if (NOT Vulkan_FOUND)
+	if (WIN32)
+		find_library(Vulkan_LIBRARY NAMES vulkan-1 vulkan PATHS $ENV{VULKAN_SDK}/Lib ${CMAKE_CURRENT_SOURCE_DIR}/Libraries/vulkan REQUIRED)
+	elseif(LINUX)
+		find_library(Vulkan_LIBRARY NAMES vulkan PATHS $ENV{VULKAN_SDK}/lib ${CMAKE_CURRENT_SOURCE_DIR}/Libraries/vulkan REQUIRED)
+	elseif(APPLE)
+		find_library(Vulkan_LIBRARY NAMES vulkan PATHS $ENV{VULKAN_SDK}/lib ${CMAKE_CURRENT_SOURCE_DIR}/Libraries/vulkan REQUIRED)
 	endif()
-endif()
-
-# verbose printing test in CI build
-message(STATUS "Build system name : ${CMAKE_SYSTEM_NAME}")
-message(STATUS ${VULKAN_PATH})
-message(STATUS ${Vulkan_INCLUDE_DIRS})
-message(STATUS ${Vulkan_LIBRARY})
-
-# vulkan library for build Vulkan application.
-if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-	# Include Vulkan header files from Vulkan SDK
-	include_directories(AFTER ${VULKAN_PATH}/Include)
-
-	# Link directory for vulkan-1
-	link_directories(${VULKAN_PATH}/Bin;${VULKAN_PATH}/Lib;)
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-	# Include Vulkan header files from Vulkan SDK
-	include_directories(AFTER ${Vulkan_INCLUDE_DIRS})
-	# Link directory for vulkan
-	link_directories(${VULKAN_PATH}/../lib)
-else()
-# Include Vulkan header files from Vulkan SDK
-	include_directories(AFTER ${Vulkan_INCLUDE_DIRS})
-	# Link directory for vulkan
-	link_directories(${VULKAN_PATH}/../lib)
+	if (Vulkan_LIBRARY)
+		set(Vulkan_FOUND ON)
+		message(STATUS "Using Bundled version of Vulkan")
+	endif()
 endif()
 
 # Includes
@@ -138,9 +111,5 @@ add_custom_target(
 	DEPENDS ${SPIRV_BINARY_FILES}
 )
 
-add_subdirectory(Sources/Components/Common)
-add_subdirectory(Sources/Components/Renderer)
-add_subdirectory(Sources/Components/Network)
-add_subdirectory(Sources/Components/Model)
 add_subdirectory(Sources/Yacht)
 add_subdirectory(Tests/UnitTests)
