@@ -12,6 +12,16 @@
 
 [![Yacht Thumbnail](https://img.youtube.com/vi/I-DsOVUYxXw/0.jpg)](https://youtu.be/I-DsOVUYxXw?t=94 "Yacht Thumbnail")
 
+## How to Build
+```c++
+git clone https://github.com/snowapril/YachtSimulator
+cd YachtSimulator
+mkdir build
+conan install . -if build --build missing -s build_type=Debug
+cd build
+cmake ..
+```
+
 ## dependency
 *   physx-4.1
 *   glfw
