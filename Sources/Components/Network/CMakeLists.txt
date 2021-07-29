@@ -1,62 +1,64 @@
 # Target name
 set(target YachtNetwork)
-
-# Define
-set(root_dir ${CMAKE_CURRENT_SOURCE_DIR}/../../..)
-set(component_dir ${CMAKE_CURRENT_SOURCE_DIR}/../..)
+set(ROOT_DIR ${PROJECT_SOURCE_DIR})
+set(LIBRARY_DIR ${PROJECT_SOURCE_DIR}/Libraries)
+set(PUBLIC_HDR_DIR ${PROJECT_SOURCE_DIR}/Includes/Components/Network)
+set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Includes
-include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}
-)
+set(PUBLIC_HDRS
+    ${PUBLIC_HDR_DIR}/Network.hpp)
 
-# Sources
-file(GLOB header_dir
-    ${root_dir}/Includes)
+#
+set(SRCS
+    ${SRC_DIR}/Network.cpp)
 
-file(GLOB_RECURSE headers
-    ${header_dir}/*.hpp)
-
-file(GLOB_RECURSE sources
-    ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
-
-# Build library
-add_library(${target}
-    ${sources})
+# 
+add_library(${target} ${SRCS})
 
 # Project options
 set_target_properties(${target}
     PROPERTIES
     ${DEFAULT_PROJECT_OPTIONS}
+    PUBLIC_HEADER ${PUBLIC_HDRS}
+)
+
+#Include directories
+target_include_directories(${target}
+    PUBLIC
+    $<BUILD_INTERFACE:${PUBLIC_HDR_DIR}>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/include>
+    PRIVATE
+    ${ROOT_DIR}/Includes
 )
 
 # Compile options
 target_compile_options(${target}
     PRIVATE
-
-    PUBLIC
     ${DEFAULT_COMPILE_OPTIONS}
-
-    INTERFACE
 )
 
+#
 target_link_libraries(${target}
-    PRIVATE
-
     PUBLIC
     ${DEFAULT_LINKER_OPTIONS}
 	${DEFAULT_LIBRARIES}
-
-    INTERFACE
 )
 
 # Compile definitions
 target_compile_definitions(${target}
     PRIVATE
-    RESOURCES_DIR="${RESOURCES_DIR}"
     ${DEFAULT_COMPILE_DEFINITIONS}
 )
 
 # Install
-install(TARGETS ${target} DESTINATION lib)
-install(DIRECTORY ${header_dir} DESTINATION include)
+install(TARGETS  ${target}
+        EXPORT   ${target}-config
+        RUNTIME  DESTINATION bin
+        LIBRARY  DESTINATION lib
+        ARCHIVE  DESTINATION lib
+        PUBLIC_HEADER DESTINATION include
+)
+install(EXPORT   ${target}-config
+        DESTINATION share/${target}
+)
