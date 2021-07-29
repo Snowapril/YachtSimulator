@@ -43,7 +43,7 @@ bool Window::Initialize(int width, int height, const std::string& title)
     return true;
 }
 
-void Window::CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface)
+void Window::CreateWindowSurface(vk::Instance instance, vk::SurfaceKHR* surface)
 {
     VK_CHECK_ERROR(glfwCreateWindowSurface(instance, _window, nullptr, surface),
                    "Failed to create window surface");

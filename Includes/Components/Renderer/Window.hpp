@@ -1,7 +1,8 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
-#include <vulkan/vulkan.h>
+#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
+#include <vulkan/vulkan.hpp>
 #include <Components/Renderer/Resource.hpp>
 
 struct GLFWwindow;
@@ -25,7 +26,7 @@ class Window : public Resource
     bool Initialize(int width, int height, const std::string &title);
 
     //! Setup given window surface ptr with given vulkan instance
-    void CreateWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
+    void CreateWindowSurface(vk::Instance instance, vk::SurfaceKHR *surface);
 
     //! Return whether this window should close because of program closed
     bool WindowShouldClose();
@@ -35,7 +36,7 @@ class Window : public Resource
     void PollEvents();
 
     //! Return generated window screen size
-    inline VkExtent2D GetScreenSize() const
+    inline vk::Extent2D GetScreenSize() const
     {
         return _screenSize;
     }
@@ -47,7 +48,7 @@ class Window : public Resource
     }
 
  private:
-    VkExtent2D _screenSize{ 0, 0 };
+    vk::Extent2D _screenSize{ 0, 0 };
     GLFWwindow *_window = nullptr;
     std::string _title;
 };

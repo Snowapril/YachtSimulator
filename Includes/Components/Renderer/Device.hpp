@@ -1,7 +1,8 @@
 #ifndef DEVICE_HPP
 #define DEVICE_HPP
 
-#include <vulkan/vulkan.h>
+#define VULKAN_HPP_DISPATCH_LOADER_DYNAMIC 1
+#include <vulkan/vulkan.hpp>
 #include <Components/Renderer/Resource.hpp>
 #include <memory>
 
@@ -21,37 +22,37 @@ class Device : public Resource
     bool Initialize(std::shared_ptr<Window> windowPtr);
 
     //! Returns vulkan instance handle
-    inline VkInstance GetInstance() const
+    inline vk::Instance GetInstance() const
     {
         return _instance;
     }
 
     //! Returns vulkan device handle
-    inline VkDevice GetDevice() const
+    inline vk::Device GetDevice() const
     {
         return _device;
     }
 
     //! Returns vulkan physical device handle
-    inline VkPhysicalDevice GetPhysicalDevice() const
+    inline vk::PhysicalDevice GetPhysicalDevice() const
     {
         return _chosenGPU;
     }
 
     //! Returns window surface handle
-    inline VkSurfaceKHR GetSurface() const
+    inline vk::SurfaceKHR GetSurface() const
     {
         return _surface;
     }
 
     //! Returns main command buffer
-    inline VkCommandBuffer GetCommandBuffer() const
+    inline vk::CommandBuffer GetCommandBuffer() const
     {
         return _mainCommandBuffer;
     }
 
     //! Returns main command buffer
-    inline VkQueue GetGraphicsQueue() const
+    inline vk::Queue GetGraphicsQueue() const
     {
         return _graphicsQueue;
     }
@@ -63,16 +64,16 @@ class Device : public Resource
     //! Initialize command pool
     bool InitCommands();
 
-    VkInstance _instance;
-    VkDebugUtilsMessengerEXT _debugMessenger;
-    VkPhysicalDevice _chosenGPU;
-    VkDevice _device;
-    VkSurfaceKHR _surface;
-    VkQueue _graphicsQueue;
+    vk::Instance _instance;
+    vk::DebugUtilsMessengerEXT _debugMessenger;
+    vk::PhysicalDevice _chosenGPU;
+    vk::Device _device;
+    vk::SurfaceKHR _surface;
+    vk::Queue _graphicsQueue;
     unsigned int _graphicsQueueFamily;
 
-    VkCommandPool _commandPool;
-    VkCommandBuffer _mainCommandBuffer;
+    vk::CommandPool _commandPool;
+    vk::CommandBuffer _mainCommandBuffer;
 
     std::shared_ptr<Window> _window;
 };

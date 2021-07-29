@@ -95,9 +95,8 @@ bool Device::InitCommands()
 
     //! Create command pool and check result
     VK_CHECK_ERROR(
-        vkCreateCommandPool(_device, &commandPoolInfo, nullptr, &_commandPool),
+        _device.createCommandPool(commandPoolInfo, nullptr, &_commandPool),
         "Failed to create command pool");
-
     //! Allocate the default command buffer that we will use for rendering
     //! Commands will be made from our _commandPool
     //! We will allocate only one command buffer.
@@ -107,13 +106,13 @@ bool Device::InitCommands()
                                                VK_COMMAND_BUFFER_LEVEL_PRIMARY);
 
     //! Allocate command buffer from the command pool and check result
-    VK_CHECK_ERROR(vkAllocateCommandBuffers(_device, &commandBufferInfo,
-                                            &_mainCommandBuffer),
-                   "Failed to allocate main command buffer");
+    VK_CHECK_ERROR(
+        _device.allocateCommandBuffers(commandBufferInfo, &_commandBuffer),
+        "Failed to allocate main command buffer");
 
     PushDeletionCall([=]() {
         //! Destroying the command pool will destroy all command buffers from it
-        vkDestroyCommandPool(_device, _commandPool, nullptr);
+        _device.destroyCommandPool(_commandPool, nullptr);
     });
 
     return true;
