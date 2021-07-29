@@ -1,54 +1,22 @@
 # CMake version
-cmake_minimum_required(VERSION 3.8.2 FATAL_ERROR)
-
-# Include cmake modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Builds/CMake")
+cmake_minimum_required(VERSION 3.18.6 FATAL_ERROR)
+cmake_policy(SET CMP0063 NEW) # visibility
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
 # Declare project
 project(YachtSimulator)
+
+# Include cmake modules
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Builds/CMake")
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 
 # Set output directories
 set(DEFAULT_CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
-
-# Find vulkan sdk.
-message(STATUS "Attempting auto locate Vulkan using CMake......")
-
-# Find Vulkan Path using CMake's Vulkan Module
-# This will return Boolean 'Vulkan_FOUND' indicating the status of find as success(ON) or fail(OFF).
-# Include directory path - 'Vulkan_INCLUDE_DIRS' and 'Vulkan_LIBRARY' with required libraries.
-find_package(Vulkan REQUIRED)
-
-if (UNIX AND NOT APPLE)
-	set(LINUX TRUE)
-endif()
-
-if (NOT Vulkan_FOUND)
-	if (WIN32)
-		find_library(Vulkan_LIBRARY NAMES vulkan-1 vulkan PATHS $ENV{VULKAN_SDK}/Lib ${CMAKE_CURRENT_SOURCE_DIR}/Libraries/vulkan REQUIRED)
-	elseif(LINUX)
-		find_library(Vulkan_LIBRARY NAMES vulkan PATHS $ENV{VULKAN_SDK}/lib ${CMAKE_CURRENT_SOURCE_DIR}/Libraries/vulkan REQUIRED)
-	elseif(APPLE)
-		find_library(Vulkan_LIBRARY NAMES vulkan PATHS $ENV{VULKAN_SDK}/lib ${CMAKE_CURRENT_SOURCE_DIR}/Libraries/vulkan REQUIRED)
-	endif()
-	if (Vulkan_LIBRARY)
-		set(Vulkan_FOUND ON)
-		message(STATUS "Using Bundled version of Vulkan")
-	endif()
-endif()
-
-# Includes
-include_directories(Includes)
-include_directories(Libraries)
-include_directories(Libraries/glfw/include)
-include_directories(Libraries/glm)
-include_directories(Libraries/imgui)
-include_directories(Libraries/tinygltf)
-include_directories(Libraries/tinyobjloader)
-include_directories(Libraries/vkbootstrap)
-include_directories(Libraries/vma)
 
 # Set enable output of compile commands during generation
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -61,6 +29,7 @@ elseif(CMAKE_BUILD_TYPE MATCHES "Debug")
     add_definitions(-DDEBUG)
 endif()
 
+#
 option(BUILD_COVERAGE "Build code coverage" OFF)
 if (CMAKE_BUILD_TYPE MATCHES Debug AND CMAKE_COMPILER_IS_GNUCXX AND BUILD_COVERAGE)
     include(CodeCoverage)
@@ -76,19 +45,37 @@ set(CMAKE_MACOSX_RPATH ON)
 # Set resources
 set(RESOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Resources)
 
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-add_subdirectory(Libraries/glfw)
-add_subdirectory(Libraries/imgui)
-add_subdirectory(Libraries/tinyobjloader)
-add_subdirectory(Libraries/vkbootstrap)
+# Imports packages
+# Get conan build script
+find_file(CONAN_SCRIPT
+	NAMES conanbuildinfo.txt
+	PATHS ${CMAKE_BINARY_DIR}
+		  ${PROJECT_SOURCE_DIR}/build
+)
+
+#
+if (CONAN_SCRIPT)
+	message(STATUS "Find Conan script directory")
+	get_fileNAME_component(CONAN_SCRIPT_DIR ${CONAN_SCRIPT} DIRECTORY)
+	list(APPEND CMAKE_MODULE_PATH ${CONAN_SCRIPT_DIR})
+endif()
+
+find_package(glslang MODULE REQUIRED)
 
 # find glslangValidator program
-find_program(GLSL_VALIDATOR glslangValidator HINTS /usr/bin /usr/local/bin $ENV{VULKAN_SDK}/bin/ $ENV{VULKAN_SDK}/Bin/ $ENV{VULKAN_SDK}/Bin32/)
+find_program(GLSL_VALIDATOR glslangValidator 
+	PATHS /usr/bin 
+		  /usr/local/bin 
+		  $ENV{VULKAN_SDK}/bin/ 
+		  $ENV{VULKAN_SDK}/Bin/ 
+		  $ENV{VULKAN_SDK}/Bin32/ 
+		  ${glslang_INCLUDE_DIR}/../bin
+)
 
 # find all the shader files under the shaders folder.
 file(GLOB_RECURSE GLSL_SOURCE_FILES
-	"${RESOURCES_DIR}/shaders/*.frag",
-	"${RESOURCES_DIR}/shaders/*.vert",
+	"${RESOURCES_DIR}/shaders/*.frag"
+	"${RESOURCES_DIR}/shaders/*.vert"
 	"${RESOURCES_DIR}/shaders/*.comp"
 )
 
@@ -106,10 +93,16 @@ foreach(GLSL ${GLSL_SOURCE_FILES})
 	list(APPEND SPIRV_BINARY_FILES ${SPIRV})
 endforeach(GLSL)
 
+#
 add_custom_target(
 	run ALL
 	DEPENDS ${SPIRV_BINARY_FILES}
 )
 
+#
+add_subdirectory(Sources/Components/Common)
+add_subdirectory(Sources/Components/Game)
+add_subdirectory(Sources/Components/Network)
+add_subdirectory(Sources/Components/Renderer)
 add_subdirectory(Sources/Yacht)
 add_subdirectory(Tests/UnitTests)
