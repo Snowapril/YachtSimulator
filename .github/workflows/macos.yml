@@ -10,8 +10,6 @@ jobs:
   build-macos:
     env:
       build_type: "Release"
-      vulkan_version: "1.2.162.1"
-      vulkan_sdk: "/Volumes/vulkansdk-macos-1.2.162.1"
     strategy:
       fail-fast: false
       matrix:
@@ -32,13 +30,6 @@ jobs:
     - uses: actions/checkout@v1
       with:
         submodules: true
-    - name: Install Vulkan SDK
-      run: |
-        # Download Vulkan SDK
-        curl -LS -o vulkansdk.dmg \
-          https://sdk.lunarg.com/sdk/download/${{ env.vulkan_version }}/mac/vulkansdk-macos-${{ env.vulkan_version }}.dmg
-        # Create Vulkan SDK directory and extract
-        hdiutil attach vulkansdk.dmg
     - name: Configure CMake
       shell: bash
       run: |
@@ -46,13 +37,15 @@ jobs:
         sudo xcode-select -switch /Applications/Xcode_${{ matrix.version }}.app
         echo "CC=clang" >> $GITHUB_ENV
         echo "CXX=clang++" >> $GITHUB_ENV
-        echo "VULKAN_SDK=${{ env.vulkan_sdk }}/macOS" >> $GITHUB_ENV
-        echo "DYLD_LIBRARY_PATH=${{ env.vulkan_sdk }}/macOS/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
-        echo "VK_ICD_FILENAMES=${{ env.vulkan_sdk }}/macOS/etc/vulkan/icd.d/MoltenVK_icd.json" >> $GITHUB_ENV
-        echo "${{ env.vulkan_sdk }}/macOS/bin" >> $GITHUB_PATH
-        echo "LD_LIBRARY_PATH=${{ env.vulkan_sdk }}/macOS/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+    - name: Install Conan Package Manager
+      shell: bash
+      run: |
+        pip install conan
     - name: Configure Build
-      run: mkdir build && cd build && cmake .. -DCMAKE_BUILD_TYPE=${{env.build_type}}
+      run: |
+        mkdir build
+        conan install . -if build --build missing -s build_type=${{env.build_type}}
+        cd build && cmake .. -DCMAKE_BUILD_TYPE=${{env.build_type}}
     - name: Build
       run: cd build && make
     - name: Run Unit Test
