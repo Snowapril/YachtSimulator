@@ -1,6 +1,6 @@
-#include <Components/Model/Player.hpp>
+#include <Components/Game/Player.hpp>
 
-namespace Model
+namespace Game
 {
 Player::Player()
 {
@@ -11,4 +11,4 @@ Player::~Player()
     //! Do nothing
 }
 
-};  // namespace Model
+};  // namespace Game

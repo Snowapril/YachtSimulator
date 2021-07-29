@@ -1,6 +1,6 @@
-#include <Components/Model/ScoreBoard.hpp>
+#include <Components/Game/ScoreBoard.hpp>
 
-namespace Model
+namespace Game
 {
 ScoreBoard::ScoreBoard()
 {
@@ -11,4 +11,4 @@ ScoreBoard::~ScoreBoard()
     //! Do nothing
 }
 
-};  // namespace Model
+};  // namespace Game

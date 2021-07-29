@@ -1,7 +1,7 @@
 #ifndef SCOREBOARD_HPP
 #define SCOREBOARD_HPP
 
-namespace Model
+namespace Game
 {
 class ScoreBoard
 {
@@ -14,6 +14,6 @@ class ScoreBoard
  protected:
  private:
 };
-};  // namespace Model
+};  // namespace Game
 
 #endif  //! SCOREBOARD_HPP

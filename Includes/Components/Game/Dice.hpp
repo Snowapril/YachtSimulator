@@ -1,7 +1,7 @@
 #ifndef DICE_HPP
 #define DICE_HPP
 
-namespace Model
+namespace Game
 {
 class Dice
 {
@@ -14,6 +14,6 @@ class Dice
  protected:
  private:
 };
-};  // namespace Model
+};  // namespace Game
 
 #endif  //! DICE_HPP

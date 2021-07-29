@@ -1,7 +1,7 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-namespace Model
+namespace Game
 {
 class Player
 {
@@ -14,6 +14,6 @@ class Player
  protected:
  private:
 };
-};  // namespace Model
+};  // namespace Game
 
 #endif  //! PLAYER_HPP
