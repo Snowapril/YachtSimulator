@@ -5,7 +5,6 @@
 [![Ubuntu github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/ubuntu.yml/badge.svg?branch=main)](https://github.com/snowapril/YachtSimulator/actions)
 [![Window github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/window.yml/badge.svg?branch=main)](https://github.com/snowapril/YachtSimulator/actions)
 [![MacOS github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/macos.yml/badge.svg?branch=main)](https://github.com/snowapril/YachtSimulator/actions)
-[![pre-commit github action](https://github.com/Snowapril/YachtSimulator/actions/workflows/pre-commit.yml/badge.svg?branch=main)](https://github.com/snowapril/YachtSimulator/actions)
 [![codecov](https://codecov.io/gh/Snowapril/YachtSimulator/branch/main/graph/badge.svg?token=DEXQCY7L76)](https://codecov.io/gh/Snowapril/YachtSimulator)
 
 ## reference
