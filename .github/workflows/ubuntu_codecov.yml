@@ -8,6 +8,8 @@ on:
 
 jobs:
   build-ubuntu:
+    env:
+      build_type: "Debug"
     strategy:
       fail-fast: false
       matrix:
@@ -24,6 +26,17 @@ jobs:
     - uses: actions/checkout@v1
       with:
         submodules: true
+    - name: Install Dependency
+      run: |
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+        sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade
+        sudo apt-get install lcov xorg-dev build-essential libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev python3-setuptools
+        if [ "${{ matrix.compiler }}" = "gcc" ]; then
+          sudo apt-get install cmake gcc-${{ matrix.version }} g++-${{ matrix.version }}
+        else
+          sudo apt-get install cmake clang-${{ matrix.version }} clang++-${{ matrix.version }}
+          sudo apt install -y libc++-${{ matrix.version }}-dev libc++abi-${{ matrix.version }}-dev
+        fi
     - name: Configure Compiler
       run: |
         if [ "${{ matrix.compiler }}" = "gcc" ]; then
@@ -33,20 +46,10 @@ jobs:
           echo "CC=clang-${{ matrix.version }}" >> $GITHUB_ENV
           echo "CXX=clang++-${{ matrix.version }}" >> $GITHUB_ENV
         fi
-    - name: Install Dependency
-      run: |
-        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-        sudo apt-get update
-        sudo apt-get install lcov xorg-dev build-essential libgl-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev
-        if [ "${{ matrix.compiler }}" = "gcc" ]; then
-          sudo apt-get install cmake gcc-${{ matrix.version }} g++-${{ matrix.version }}
-        else
-          sudo apt-get install cmake clang-${{ matrix.version }} clang++-${{ matrix.version }}
-        fi
     - name: Install Conan Package Manager
       shell: bash
       run: |
-        pip install conan
+        pip3 install conan
     - name: Configure Build
       run: |
         mkdir build
