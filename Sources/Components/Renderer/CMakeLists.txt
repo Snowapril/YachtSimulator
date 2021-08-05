@@ -26,7 +26,7 @@ set(PUBLIC_HDRS
     ${PUBLIC_HDR_DIR}/Utils.hpp
     ${PUBLIC_HDR_DIR}/Window.hpp)
 
-#
+# Set sources list
 set(SRCS
     ${SRC_DIR}/Device.cpp
     ${SRC_DIR}/Initializer.cpp
@@ -36,8 +36,8 @@ set(SRCS
     ${SRC_DIR}/Utils.cpp
     ${SRC_DIR}/Window.cpp)
 
-# 
-add_library(${target} ${SRCS})
+# Build static library with given sources
+add_library(${target} STATIC ${SRCS})
 
 # Project options
 set_target_properties(${target}
@@ -69,18 +69,18 @@ target_compile_options(${target}
     ${DEFAULT_COMPILE_OPTIONS}
 )
 
-#
+# Link libraries
 target_link_libraries(${target}
     PUBLIC
     ${DEFAULT_LINKER_OPTIONS}
 	${DEFAULT_LIBRARIES}    
-    ${Vulkan_LIBRARY}
-    ${glfw_LIBRARIES}
-    ${glm_LIBRARIES}
-    ${vulkan-memory-allocator_LIBRARIES}
-    ${imgui_LIBRARIES}
-    ${TinyGLTF_LIBRARIES}
-    ${vk-bootstrap_LIBRARIES}
+    Vulkan::Vulkan
+    glfw::glfw
+    glm::glm
+    vulkan-memory-allocator::vulkan-memory-allocator
+    imgui::imgui
+    TinyGLTF::TinyGLTF
+    vk-bootstrap::vk-bootstrap
 )
 
 # Compile definitions
