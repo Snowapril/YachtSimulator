@@ -30,6 +30,7 @@ set(PUBLIC_HDRS
 set(SRCS
     ${SRC_DIR}/Device.cpp
     ${SRC_DIR}/Initializer.cpp
+    ${SRC_DIR}/Pipeline.cpp
     ${SRC_DIR}/Renderer.cpp
     ${SRC_DIR}/Resource.cpp
     ${SRC_DIR}/SwapChain.cpp
