@@ -11,11 +11,11 @@ set(PUBLIC_HDRS
     ${PUBLIC_HDR_DIR}/Logger.hpp
     ${PUBLIC_HDR_DIR}/Macros.hpp)
 
-#
+# Set sources list
 set(SRCS
     ${SRC_DIR}/Logger.cpp)
 
-# 
+# Build static library with given sources
 add_library(${target} ${SRCS})
 
 # Project options
@@ -40,7 +40,7 @@ target_compile_options(${target}
     ${DEFAULT_COMPILE_OPTIONS}
 )
 
-#
+# Link libraries
 target_link_libraries(${target}
     PUBLIC
     ${DEFAULT_LINKER_OPTIONS}

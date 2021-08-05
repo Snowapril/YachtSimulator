@@ -9,7 +9,7 @@ set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(PUBLIC_HDRS
     ${PUBLIC_HDR_DIR}/Application.hpp)
 
-#
+# Set sources list
 set(SRCS
     ${SRC_DIR}/Application.cpp
     ${SRC_DIR}/main.cpp)
@@ -46,6 +46,7 @@ target_compile_definitions(${target}
     ${DEFAULT_COMPILE_DEFINITIONS}
 )
 
+# Link libraries
 target_link_libraries(${target}
     PUBLIC
     ${DEFAULT_LINKER_OPTIONS}

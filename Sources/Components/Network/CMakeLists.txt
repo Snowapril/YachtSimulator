@@ -9,12 +9,12 @@ set(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(PUBLIC_HDRS
     ${PUBLIC_HDR_DIR}/Network.hpp)
 
-#
+# Set sources list
 set(SRCS
     ${SRC_DIR}/Network.cpp)
 
-# 
-add_library(${target} ${SRCS})
+# Build static library with given sources
+add_library(${target} STATIC ${SRCS})
 
 # Project options
 set_target_properties(${target}
@@ -38,7 +38,7 @@ target_compile_options(${target}
     ${DEFAULT_COMPILE_OPTIONS}
 )
 
-#
+# Link libraries
 target_link_libraries(${target}
     PUBLIC
     ${DEFAULT_LINKER_OPTIONS}
