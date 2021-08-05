@@ -11,8 +11,13 @@
 
 [![Yacht Thumbnail](https://img.youtube.com/vi/I-DsOVUYxXw/0.jpg)](https://youtu.be/I-DsOVUYxXw?t=94 "Yacht Thumbnail")
 
+## Install Conan package manager (if you dont have)
+```bash
+pip install conan
+```
+
 ## How to Build
-```c++
+```bash
 git clone https://github.com/snowapril/YachtSimulator
 cd YachtSimulator
 mkdir build
@@ -22,15 +27,17 @@ cmake ..
 ```
 
 ## dependency
-*   physx-4.1
-*   glfw
-*   glm
-*   imgui
-*   tinygltf
-*   tinyobjloader
-*   vkbootstrap
-*   vma
-*   volk
+*   physx[4.1]
+*   vulkan-headers[1.2.162]
+*   vulkan-loader[1.2.162.0]
+*   glslang[>=11.5.0]
+*   doctest[>=2.4.6]
+*   glfw[>=3.3.4]
+*   glm[>=0.9.9]
+*   imgui[>=1.83]
+*   tinygltf[>=2.5.0]
+*   vk-bootstrap[>=0.3.1]
+*   vulkan-memory-allocator[>=2.3.0]
 
 ## License
 <img align="right" src="http://opensource.org/trademarks/opensource/OSI-Approved-License-100x137.png">
