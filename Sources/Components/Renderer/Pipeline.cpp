@@ -2,6 +2,7 @@
 #include <Components/Renderer/Device.hpp>
 #include <Components/Renderer/Pipeline.hpp>
 #include <fstream>
+#include <vector>
 
 namespace Renderer
 {
