@@ -26,5 +26,21 @@ VkCommandBufferAllocateInfo CommandBufferAllocateInfo(
     info.level = level;
     return info;
 }
+
+VkPipelineShaderStageCreateInfo PipelineShaderStageCreateInfo(
+    VkShaderStageFlagBits stage, VkShaderModule shaderModule)
+{
+    VkPipelineShaderStageCreateInfo info = {};
+    info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    info.pNext = nullptr;
+
+    //! Set shader stage
+    info.stage = stage;
+    //! Pass module containing the code for this shader stage
+    info.module = shaderModule;
+    //! Set the entry point of the shader (normally, main)
+    info.pName = "main";
+    return info;
+}
 }  // namespace Initializer
 };  // namespace Renderer
