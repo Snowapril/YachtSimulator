@@ -1,19 +1,85 @@
-#include <vulkan/vulkan.h>
+#include <Components/Common/Logger.hpp>
 #include <Components/Renderer/Device.hpp>
+#include <Components/Renderer/Initializer.hpp>
 #include <Components/Renderer/Pipeline.hpp>
 #include <fstream>
 #include <vector>
 
 namespace Renderer
 {
-Pipeline::Pipeline(std::shared_ptr<Device> devicePtr) : _device(devicePtr)
+Pipeline::Pipeline(std::shared_ptr<Device> devicePtr,
+                   const ShaderInfoStorage& shaderInfos,
+                   const PipelineConfigInfo& config)
 {
-    //! Do nothing
+    [[maybe_unused]] bool result = Initialize(devicePtr, shaderInfos, config);
+    assert(result == true);
 }
 
 Pipeline::~Pipeline()
 {
     FlushDeletion();
+}
+
+bool Pipeline::Initialize(std::shared_ptr<Device> devicePtr,
+                          const ShaderInfoStorage& shaderInfos,
+                          const PipelineConfigInfo& config)
+{
+    //! Pass device smart pointer to member variable
+    _device = devicePtr;
+
+    //! Check whether essential handles configured or not
+    if (config.pipelineLayout == VK_NULL_HANDLE)
+    {
+        LOG_ERROR << "Null handle is passed in pipeline layout";
+        return false;
+    }
+    if (config.renderPass == VK_NULL_HANDLE)
+    {
+        LOG_ERROR << "Null handle is passed in render pass";
+        return false;
+    }
+
+    //! Configure final pipeline building info structure
+    VkGraphicsPipelineCreateInfo pipelineInfo = {};
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.pNext = nullptr;
+
+    //! Pass preconfigured pipeline settings.
+    pipelineInfo.pVertexInputState = &(config.vertexInput);
+    pipelineInfo.pInputAssemblyState = &(config.inputAssembly);
+    pipelineInfo.pViewportState = &(config.viewportState);
+    pipelineInfo.pRasterizationState = &(config.rasterizer);
+    pipelineInfo.pMultisampleState = &(config.multisampling);
+    pipelineInfo.pColorBlendState = &(config.colorBlendState);
+    pipelineInfo.layout = config.pipelineLayout;
+    pipelineInfo.renderPass = config.renderPass;
+    pipelineInfo.subpass = 0;
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+
+    //! Compile given shader path and pass it to pipeline builder
+    std::vector<VkPipelineShaderStageCreateInfo> compiledShaders;
+    for (const auto& pair : shaderInfos)
+    {
+        VkShaderModule newModule;
+        if (!LoadShaderModule(pair.second, &newModule))
+        {
+            LOG_ERROR << "Failed to compile shader file : " << pair.second;
+            return false;
+        }
+
+        compiledShaders.emplace_back(
+            Initializer::PipelineShaderStageCreateInfo(pair.first, newModule));
+    }
+    pipelineInfo.stageCount = static_cast<uint32_t>(compiledShaders.size());
+    pipelineInfo.pStages = compiledShaders.data();
+
+    //! Build pipeline with configuration
+    VK_CHECK_ERROR(
+        vkCreateGraphicsPipelines(_device->GetDevice(), VK_NULL_HANDLE, 1,
+                                  &pipelineInfo, nullptr, &_pipeline),
+        "Failed to create graphics pipeline");
+
+    return true;
 }
 
 bool Pipeline::LoadShaderModule(const std::string& path,
@@ -55,7 +121,6 @@ bool Pipeline::LoadShaderModule(const std::string& path,
     if (vkCreateShaderModule(_device->GetDevice(), &shaderModuleInfo, nullptr,
                              &shaderModule) != VK_SUCCESS)
         return false;
-
     //! Now shader loading success
     *outShaderModule = shaderModule;
 
