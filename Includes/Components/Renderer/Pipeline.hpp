@@ -8,6 +8,20 @@ namespace Renderer
 {
 class Device;
 
+struct PipelineConfigInfo
+{
+    VkPipelineVertexInputStateCreateInfo vertexInput{};
+    VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
+    VkPipelineRasterizationStateCreateInfo rasterizer{};
+    VkPipelineColorBlendAttachmentState colorBlendAttachment{};
+    VkPipelineColorBlendStateCreateInfo colorBlendState{};
+    VkPipelineMultisampleStateCreateInfo multisampling{};
+    VkPipelineLayout pipelineLayout{};
+    VkRenderPass renderPass{};
+    VkPipelineViewportStateCreateInfo viewportState{};
+    VkViewport viewport{};
+    VkRect2D scissor{};
+};
 class Pipeline : public Resource
 {
  public:
@@ -16,6 +30,14 @@ class Pipeline : public Resource
 
     //! Default destructor
     ~Pipeline();
+
+    /**
+     * @brief Returns default pipeline config structure
+     * @warning As scissor, viewport and pipelinelayout structure not
+     * initialized in this function, you need to initialize it manually.
+     * @param config default config settings are passed by pointer
+     */
+    static void GetDefaultPipelineConfig(PipelineConfigInfo* config);
 
  protected:
  private:
