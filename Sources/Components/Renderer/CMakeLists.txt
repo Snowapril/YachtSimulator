@@ -21,6 +21,7 @@ set(PUBLIC_HDRS
     ${PUBLIC_HDR_DIR}/Initializer.hpp
     ${PUBLIC_HDR_DIR}/Pipeline.hpp
     ${PUBLIC_HDR_DIR}/Renderer.hpp
+    ${PUBLIC_HDR_DIR}/RenderSystem.hpp
     ${PUBLIC_HDR_DIR}/Resource.hpp
     ${PUBLIC_HDR_DIR}/SwapChain.hpp
     ${PUBLIC_HDR_DIR}/Utils.hpp
@@ -32,6 +33,7 @@ set(SRCS
     ${SRC_DIR}/Initializer.cpp
     ${SRC_DIR}/Pipeline.cpp
     ${SRC_DIR}/Renderer.cpp
+    ${SRC_DIR}/RenderSystem.cpp
     ${SRC_DIR}/Resource.cpp
     ${SRC_DIR}/SwapChain.cpp
     ${SRC_DIR}/Utils.cpp
