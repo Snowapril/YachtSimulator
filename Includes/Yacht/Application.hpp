@@ -15,12 +15,27 @@ class Application
 {
  public:
     //! Default constructor
-    Application();
+    Application() = default;
+
+    /**
+     * @brief Construct application instance with given config
+     *
+     * @param width screen width
+     * @param height screen height
+     * @param title application title
+     */
+    Application(int width, int height, const std::string& title);
 
     //! Default destructor
     ~Application();
 
-    //! Initialize entire components of vulkan rendering system
+    /**
+     * @brief Initialize entire components of vulkan rendering system
+     *
+     * @param width screen width
+     * @param height screen height
+     * @param title application title
+     */
     bool Initialize(int width, int height, const std::string& title);
 
     //! Run main loop of the Yacht Application

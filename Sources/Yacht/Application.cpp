@@ -3,10 +3,12 @@
 #include <Components/Renderer/Renderer.hpp>
 #include <Components/Renderer/Window.hpp>
 #include <Yacht/Application.hpp>
+#include <cassert>
 
-Application::Application()
+Application::Application(int width, int height, const std::string& title)
 {
-    //! Do nothing
+    [[maybe_unused]] bool result = Initialize(width, height, title);
+    assert(result == true);
 }
 
 Application::~Application()
