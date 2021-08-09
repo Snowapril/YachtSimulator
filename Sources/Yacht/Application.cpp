@@ -29,6 +29,9 @@ bool Application::Initialize(int width, int height, const std::string& title)
 
 void Application::Run()
 {
+    RenderSystem renderSystem{ _device,
+                               (_renderer->GetSwapChain())->GetRenderPass() };
+    (void)renderSystem;
     while (!_window->WindowShouldClose())
     {
         _window->PollEvents();
@@ -38,7 +41,7 @@ void Application::Run()
             _renderer->BeginSwapChainRenderPass(cmd);
 
             //! Do rendering stuffs here.
-            //! 
+            //!
 
             _renderer->EndSwapChainRenderPass(cmd);
             _renderer->EndFrame();
