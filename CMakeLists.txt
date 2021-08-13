@@ -29,7 +29,7 @@ elseif(CMAKE_BUILD_TYPE MATCHES "Debug")
     add_definitions(-DDEBUG)
 endif()
 
-#
+# Option for enable code coverage check
 option(BUILD_COVERAGE "Build code coverage" OFF)
 if (CMAKE_BUILD_TYPE MATCHES Debug AND CMAKE_COMPILER_IS_GNUCXX AND BUILD_COVERAGE)
     include(CodeCoverage)
@@ -53,7 +53,7 @@ find_file(CONAN_SCRIPT
 		  ${PROJECT_SOURCE_DIR}/build
 )
 
-#
+# Find conan build script directory
 if (CONAN_SCRIPT)
 	message(STATUS "Find Conan script directory")
 	get_fileNAME_component(CONAN_SCRIPT_DIR ${CONAN_SCRIPT} DIRECTORY)
@@ -93,16 +93,18 @@ foreach(GLSL ${GLSL_SOURCE_FILES})
 	list(APPEND SPIRV_BINARY_FILES ${SPIRV})
 endforeach(GLSL)
 
-#
+# Convert all shader files to Spir-V
 add_custom_target(
 	run ALL
 	DEPENDS ${SPIRV_BINARY_FILES}
 )
 
-#
+# Build Sub-component modules
 add_subdirectory(Sources/Components/Common)
 add_subdirectory(Sources/Components/Game)
 add_subdirectory(Sources/Components/Network)
 add_subdirectory(Sources/Components/Renderer)
+# Build main Yacht simulator application
 add_subdirectory(Sources/Yacht)
+# Build unit testing
 add_subdirectory(Tests/UnitTests)
