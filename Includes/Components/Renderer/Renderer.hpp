@@ -4,6 +4,7 @@
 #include <vulkan/vulkan.h>
 #include <Components/Renderer/Resource.hpp>
 #include <Components/Renderer/SwapChain.hpp>
+#include <cassert>
 
 namespace Renderer
 {
@@ -39,13 +40,20 @@ class Renderer : public Resource
     //! Finalize the swapchain renderpass
     void EndSwapChainRenderPass(VkCommandBuffer commandBuffer);
 
+    //! Returns generated render pass handle
+    inline VkRenderPass GetRenderPassHandle()
+    {
+        //! Check swap chain initialized or not
+        assert(_swapChain);
+        return _swapChain->GetRenderPassHandle();
+    }
+
  private:
     std::shared_ptr<Device> _device;
     std::shared_ptr<Window> _window;
     std::unique_ptr<SwapChain> _swapChain;
     VkClearColorValue _clearColor{ { 0.0f, 0.0f, 0.0f, 1.0f } };
     unsigned int _currentImageIndex{ 0 };
-
 };
 };  // namespace Renderer
 

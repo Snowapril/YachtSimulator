@@ -1,5 +1,6 @@
 #include <Components/Common/Logger.hpp>
 #include <Components/Renderer/Device.hpp>
+#include <Components/Renderer/RenderSystem.hpp>
 #include <Components/Renderer/Renderer.hpp>
 #include <Components/Renderer/Window.hpp>
 #include <Yacht/Application.hpp>
@@ -29,8 +30,7 @@ bool Application::Initialize(int width, int height, const std::string& title)
 
 void Application::Run()
 {
-    RenderSystem renderSystem{ _device,
-                               (_renderer->GetSwapChain())->GetRenderPass() };
+    Renderer::RenderSystem renderSystem{ _device, _renderer->GetRenderPassHandle() };
     (void)renderSystem;
     while (!_window->WindowShouldClose())
     {
