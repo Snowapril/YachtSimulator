@@ -21,37 +21,37 @@ class Device : public Resource
     bool Initialize(std::shared_ptr<Window> windowPtr);
 
     //! Returns vulkan instance handle
-    inline VkInstance GetInstance() const
+    inline VkInstance GetInstanceHandle() const
     {
         return _instance;
     }
 
     //! Returns vulkan device handle
-    inline VkDevice GetDevice() const
+    inline VkDevice GetDeviceHandle() const
     {
         return _device;
     }
 
     //! Returns vulkan physical device handle
-    inline VkPhysicalDevice GetPhysicalDevice() const
+    inline VkPhysicalDevice GetPhysicalDeviceHandle() const
     {
         return _chosenGPU;
     }
 
     //! Returns window surface handle
-    inline VkSurfaceKHR GetSurface() const
+    inline VkSurfaceKHR GetSurfaceHandle() const
     {
         return _surface;
     }
 
     //! Returns main command buffer
-    inline VkCommandBuffer GetCommandBuffer() const
+    inline VkCommandBuffer GetCommandBufferHandle() const
     {
         return _mainCommandBuffer;
     }
 
     //! Returns main command buffer
-    inline VkQueue GetGraphicsQueue() const
+    inline VkQueue GetGraphicsQueueHandle() const
     {
         return _graphicsQueue;
     }

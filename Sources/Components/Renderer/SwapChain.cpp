@@ -22,9 +22,9 @@ bool SwapChain::Initialize(std::shared_ptr<Device> devicePtr, VkExtent2D extent)
     _device = devicePtr;
     _extent = extent;
 
-    vkb::SwapchainBuilder builder{ _device->GetPhysicalDevice(),
-                                   _device->GetDevice(),
-                                   _device->GetSurface() };
+    vkb::SwapchainBuilder builder{ _device->GetPhysicalDeviceHandle(),
+                                   _device->GetDeviceHandle(),
+                                   _device->GetSurfaceHandle() };
 
     vkb::Swapchain vkbSwapChain =
         builder.use_default_format_selection()
@@ -40,10 +40,10 @@ bool SwapChain::Initialize(std::shared_ptr<Device> devicePtr, VkExtent2D extent)
     _swapChainImageFormat = vkbSwapChain.image_format;
 
     PushDeletionCall([=]() {
-        vkDestroySwapchainKHR(_device->GetDevice(), _swapChain, nullptr);
+        vkDestroySwapchainKHR(_device->GetDeviceHandle(), _swapChain, nullptr);
 
         for (auto& imageView : _swapChainImageViews)
-            vkDestroyImageView(_device->GetDevice(), imageView, nullptr);
+            vkDestroyImageView(_device->GetDeviceHandle(), imageView, nullptr);
     });
 
     if (!InitDefaultRenderPass())
@@ -101,12 +101,12 @@ bool SwapChain::InitDefaultRenderPass()
     renderPassInfo.subpassCount = 1;
     renderPassInfo.pSubpasses = &subpassDesc;
 
-    VK_CHECK_ERROR(vkCreateRenderPass(_device->GetDevice(), &renderPassInfo,
+    VK_CHECK_ERROR(vkCreateRenderPass(_device->GetDeviceHandle(), &renderPassInfo,
                                       nullptr, &_renderPass),
                    "Failed to create renderpass");
 
     PushDeletionCall([=]() {
-        vkDestroyRenderPass(_device->GetDevice(), _renderPass, nullptr);
+        vkDestroyRenderPass(_device->GetDeviceHandle(), _renderPass, nullptr);
     });
 
     return true;
@@ -134,12 +134,12 @@ bool SwapChain::InitFramebuffers()
     {
         framebufferInfo.pAttachments = &_swapChainImageViews[i];
         VK_CHECK_ERROR(
-            vkCreateFramebuffer(_device->GetDevice(), &framebufferInfo, nullptr,
+            vkCreateFramebuffer(_device->GetDeviceHandle(), &framebufferInfo, nullptr,
                                 &_framebuffers[i]),
             "Failed to create framebuffer");
 
         PushDeletionCall([=]() {
-            vkDestroyFramebuffer(_device->GetDevice(), _framebuffers[i],
+            vkDestroyFramebuffer(_device->GetDeviceHandle(), _framebuffers[i],
                                  nullptr);
         });
     }
@@ -159,7 +159,7 @@ bool SwapChain::InitSyncStructures()
     fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
     VK_CHECK_ERROR(
-        vkCreateFence(_device->GetDevice(), &fenceInfo, nullptr, &_renderFence),
+        vkCreateFence(_device->GetDeviceHandle(), &fenceInfo, nullptr, &_renderFence),
         "Failed to create render fence");
 
     //! For the semaphores, we don't need any flags
@@ -168,20 +168,20 @@ bool SwapChain::InitSyncStructures()
     semaphoreInfo.pNext = nullptr;
     semaphoreInfo.flags = 0;
 
-    VK_CHECK_ERROR(vkCreateSemaphore(_device->GetDevice(), &semaphoreInfo,
+    VK_CHECK_ERROR(vkCreateSemaphore(_device->GetDeviceHandle(), &semaphoreInfo,
                                      nullptr, &_presentSemaphore),
                    "Failed to create present semaphore");
 
-    VK_CHECK_ERROR(vkCreateSemaphore(_device->GetDevice(), &semaphoreInfo,
+    VK_CHECK_ERROR(vkCreateSemaphore(_device->GetDeviceHandle(), &semaphoreInfo,
                                      nullptr, &_renderSemaphore),
                    "Failed to create render semaphore");
 
     //! Push fence & semaphore deletion call
     PushDeletionCall([=]() {
-        vkDeviceWaitIdle(_device->GetDevice());
-        vkDestroyFence(_device->GetDevice(), _renderFence, nullptr);
-        vkDestroySemaphore(_device->GetDevice(), _presentSemaphore, nullptr);
-        vkDestroySemaphore(_device->GetDevice(), _renderSemaphore, nullptr);
+        vkDeviceWaitIdle(_device->GetDeviceHandle());
+        vkDestroyFence(_device->GetDeviceHandle(), _renderFence, nullptr);
+        vkDestroySemaphore(_device->GetDeviceHandle(), _presentSemaphore, nullptr);
+        vkDestroySemaphore(_device->GetDeviceHandle(), _renderSemaphore, nullptr);
     });
 
     return true;
@@ -214,7 +214,7 @@ VkResult SwapChain::SubmitCommandBuffer(VkCommandBuffer cmd,
     //! Submit the command buffer to the queue and execute it
     //! _renderFence will now block until the graphic commands finish execution
     VK_CHECK_ERROR(
-        vkQueueSubmit(_device->GetGraphicsQueue(), 1, &submit, _renderFence),
+        vkQueueSubmit(_device->GetGraphicsQueueHandle(), 1, &submit, _renderFence),
         "Failed to submit command buffer to the queue");
 
     //! This will put the image we just rendered into the visible window
@@ -233,13 +233,13 @@ VkResult SwapChain::SubmitCommandBuffer(VkCommandBuffer cmd,
 
     presentInfo.pImageIndices = &imageIndex;
 
-    return vkQueuePresentKHR(_device->GetGraphicsQueue(), &presentInfo);
+    return vkQueuePresentKHR(_device->GetGraphicsQueueHandle(), &presentInfo);
 }
 
 VkResult SwapChain::AcquireNextImage(unsigned int* swapChainIndex)
 {
     //! Get the VkDevice
-    VkDevice device = _device->GetDevice();
+    VkDevice device = _device->GetDeviceHandle();
     //! Wait until the GPU has finished rendering the last frame.
     //! Timeout of 1 second
     auto result = vkWaitForFences(device, 1, &_renderFence, true,

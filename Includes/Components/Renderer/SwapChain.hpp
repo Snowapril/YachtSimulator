@@ -37,19 +37,19 @@ class SwapChain : public Resource
     }
 
     //! Get swapchain handle
-    inline VkSwapchainKHR GetSwapChain() const
+    inline VkSwapchainKHR GetSwapChainHandle() const
     {
         return _swapChain;
     }
 
     //! Get currnet render pass
-    inline VkRenderPass GetRenderPass() const
+    inline VkRenderPass GetRenderPassHandle() const
     {
         return _renderPass;
     }
 
     //! Get framebuffer with given index
-    inline VkFramebuffer GetFramebuffer(unsigned int index) const
+    inline VkFramebuffer GetFramebufferHandle(unsigned int index) const
     {
         if (_framebuffers.size() <= index)
         {

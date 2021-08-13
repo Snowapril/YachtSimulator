@@ -75,7 +75,7 @@ bool Pipeline::Initialize(std::shared_ptr<Device> devicePtr,
 
     //! Build pipeline with configuration
     VK_CHECK_ERROR(
-        vkCreateGraphicsPipelines(_device->GetDevice(), VK_NULL_HANDLE, 1,
+        vkCreateGraphicsPipelines(_device->GetDeviceHandle(), VK_NULL_HANDLE, 1,
                                   &pipelineInfo, nullptr, &_pipeline),
         "Failed to create graphics pipeline");
 
@@ -118,7 +118,7 @@ bool Pipeline::LoadShaderModule(const std::string& path,
     //! Check that the creation goes well
     VkShaderModule shaderModule;
 
-    if (vkCreateShaderModule(_device->GetDevice(), &shaderModuleInfo, nullptr,
+    if (vkCreateShaderModule(_device->GetDeviceHandle(), &shaderModuleInfo, nullptr,
                              &shaderModule) != VK_SUCCESS)
         return false;
     //! Now shader loading success

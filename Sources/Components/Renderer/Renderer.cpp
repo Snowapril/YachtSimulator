@@ -2,7 +2,6 @@
 #include <Components/Renderer/Renderer.hpp>
 #include <Components/Renderer/Utils.hpp>
 #include <Components/Renderer/Window.hpp>
-#include <cassert>
 #include <cmath>
 
 namespace Renderer
@@ -60,7 +59,7 @@ VkCommandBuffer Renderer::BeginFrame()
     }
     VK_CHECK_ERROR(result, "Failed to acquire swap chain image");
     //! Get current frame command buffer from the device
-    auto cmd = _device->GetCommandBuffer();
+    auto cmd = _device->GetCommandBufferHandle();
     //! Now that we are sure that the commands finished executing,
     //! we can safely reset the commandbuffer to begin recording again
     VK_CHECK_ERROR(vkResetCommandBuffer(cmd, 0),
@@ -85,7 +84,7 @@ VkCommandBuffer Renderer::BeginFrame()
 void Renderer::EndFrame()
 {
     //! Get current frame command buffer from the device
-    auto cmd = _device->GetCommandBuffer();
+    auto cmd = _device->GetCommandBufferHandle();
     VK_CHECK_ERROR(vkEndCommandBuffer(cmd),
                    "Failed to complete command buffer recording");
 
@@ -108,12 +107,12 @@ void Renderer::BeginSwapChainRenderPass(VkCommandBuffer commandBuffer)
     renderPassBeginInfo.pNext = nullptr;
     renderPassBeginInfo.clearValueCount = 1;
     renderPassBeginInfo.pClearValues = &clearValue;
-    renderPassBeginInfo.renderPass = _swapChain->GetRenderPass();
+    renderPassBeginInfo.renderPass = _swapChain->GetRenderPassHandle();
     renderPassBeginInfo.renderArea.offset = { 0, 0 };
     renderPassBeginInfo.renderArea.extent = _window->GetScreenSize();
 
     if (VkFramebuffer currentFramebuffer =
-            _swapChain->GetFramebuffer(_currentImageIndex))
+            _swapChain->GetFramebufferHandle(_currentImageIndex))
         renderPassBeginInfo.framebuffer = currentFramebuffer;
     else
     {
