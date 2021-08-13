@@ -22,17 +22,23 @@ bool RenderSystem::Initialize(std::shared_ptr<Device> devicePtr,
 {
     _device = devicePtr;
 
-    CreatePipelineLayout(renderPass);
-    CreatePipeline();
+    if (!CreatePipelineLayout(renderPass))
+        return false;
+
+    if (!CreatePipeline())
+        return false;
+
+    return true;
 }
 
 bool RenderSystem::CreatePipelineLayout(VkRenderPass renderPass)
 {
     (void)renderPass;
+    return true;
 }
 
 bool RenderSystem::CreatePipeline()
 {
-    //! Do nothing
+    return true;
 }
 };  // namespace Renderer
