@@ -46,7 +46,7 @@ add_library(${target} STATIC ${SRCS})
 set_target_properties(${target}
     PROPERTIES
     ${DEFAULT_PROJECT_OPTIONS}
-    PUBLIC_HEADER ${PUBLIC_HDRS}
+    PUBLIC_HEADER "${PUBLIC_HDRS}"
 )
 
 #Include directories
