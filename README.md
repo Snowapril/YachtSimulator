@@ -27,6 +27,7 @@ cmake ..
 ```
 
 ## dependency
+*   Vulkan[1.2.182.0]
 *   physx[4.1]
 *   vulkan-headers[1.2.162]
 *   vulkan-loader[1.2.162.0]

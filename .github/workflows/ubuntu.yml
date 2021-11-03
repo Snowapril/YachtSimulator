@@ -10,6 +10,8 @@ jobs:
   build-ubuntu:
     env:
       build_type: "Release"
+      vulkan_sdk: "$GITHUB_WORKSPACE/vulkan_sdk"
+      vulkan_version: "1.2.182.0"
     strategy:
       fail-fast: false
       matrix:
@@ -57,6 +59,20 @@ jobs:
           echo "CC=clang-${{ matrix.version }}" >> $GITHUB_ENV
           echo "CXX=clang++-${{ matrix.version }}" >> $GITHUB_ENV
         fi
+    - name: Install Vulkan SDK
+      shell: bash
+      run: |
+        # Download Vulkan SDK
+        curl -LS -o vulkansdk.tar.gz \
+          https://sdk.lunarg.com/sdk/download/${{ env.vulkan_version }}/linux/vulkansdk-linux-x86_64-${{ env.vulkan_version }}.tar.gz
+        # Create Vulkan SDK directory and extract
+        mkdir "${{ env.vulkan_sdk }}"
+        tar -xzf vulkansdk.tar.gz -C "${{ env.vulkan_sdk }}"
+        echo "VULKAN_SDK=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/x86_64" >> $GITHUB_ENV
+        echo "VK_SDK_PATH=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/x86_64" >> $GITHUB_ENV
+        echo "${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/x86_64/bin" >> $GITHUB_PATH
+        echo "LD_LIBRARY_PATH=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/x86_64/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+        echo "VK_LAYER_PATH=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/x86_64/etc/vulkan/explicit_layer.d" >> $GITHUB_ENV
     - name: Install Conan Package Manager
       shell: bash
       run: |

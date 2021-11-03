@@ -60,45 +60,6 @@ if (CONAN_SCRIPT)
 	list(APPEND CMAKE_MODULE_PATH ${CONAN_SCRIPT_DIR})
 endif()
 
-find_package(glslang MODULE REQUIRED)
-
-# find glslangValidator program
-find_program(GLSL_VALIDATOR glslangValidator 
-	PATHS /usr/bin 
-		  /usr/local/bin 
-		  $ENV{VULKAN_SDK}/bin/ 
-		  $ENV{VULKAN_SDK}/Bin/ 
-		  $ENV{VULKAN_SDK}/Bin32/ 
-		  ${glslang_INCLUDE_DIR}/../bin
-)
-
-# find all the shader files under the shaders folder.
-file(GLOB_RECURSE GLSL_SOURCE_FILES
-	"${RESOURCES_DIR}/shaders/*.frag"
-	"${RESOURCES_DIR}/shaders/*.vert"
-	"${RESOURCES_DIR}/shaders/*.comp"
-)
-
-# iterate each shader and compile them
-foreach(GLSL ${GLSL_SOURCE_FILES})
-	message(STATUS "Building Shader")
-	get_filename_component(FILE_NAME ${GLSL} NAME)
-	set(SPIRV "${RESOURCES_DIR}/shaders/${FILE_NAME}.spv")
-	message(STATUS ${GLSL})
-	add_custom_command(
-		OUTPUT ${SPIRV}
-		COMMAND ${GLSL_VALIDATOR} -V ${GLSL} -o ${SPIRV}
-		DEPENDS ${GLSL}
-	)
-	list(APPEND SPIRV_BINARY_FILES ${SPIRV})
-endforeach(GLSL)
-
-#
-add_custom_target(
-	run ALL
-	DEPENDS ${SPIRV_BINARY_FILES}
-)
-
 #
 add_subdirectory(Sources/Components/Common)
 add_subdirectory(Sources/Components/Game)

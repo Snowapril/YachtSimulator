@@ -10,6 +10,8 @@ jobs:
   build-window:
     env:
       build_type: "Release"
+      vulkan_sdk: "C:/VulkanSDK"
+      vulkan_version: "1.2.182.0"
     strategy:
       fail-fast: false
       matrix:
@@ -25,6 +27,16 @@ jobs:
     - uses: actions/checkout@v1
       with:
         submodules: true
+    - name: Install Vulkan SDK
+      run: |
+        choco install --yes vulkan-sdk --version=${{env.vulkan_version}}
+    - name: Configure CMake
+      shell: bash
+      run: |
+        echo "VULKAN_SDK=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}" >> $GITHUB_ENV
+        echo "VK_SDK_PATH=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}" >> $GITHUB_ENV
+        echo "${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/Bin" >> $GITHUB_PATH
+        echo "LD_LIBRARY_PATH=${{ env.vulkan_sdk }}/${{ env.vulkan_version }}/Lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
     - name: Install Conan Package Manager
       run: |
         pip install conan
