@@ -37,7 +37,7 @@ class SwapChain : public Resource
     }
 
     //! Get swapchain handle
-    inline VkSwapchainKHR GetSwapChain() const
+    inline VkSwapchainKHR GetHandle() const
     {
         return _swapChain;
     }
