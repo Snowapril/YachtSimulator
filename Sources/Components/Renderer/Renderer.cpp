@@ -36,7 +36,7 @@ void Renderer::RecreateSwapChain(VkExtent2D extent)
     if (_swapChain)
     {
         auto oldSwapChain = std::move(_swapChain);
-        _swapChain = std::make_unique<SwapChain>(_device, extent);
+        _swapChain = std::make_shared<SwapChain>(_device, extent);
         if (oldSwapChain->GetImageFormat() != _swapChain->GetImageFormat())
         {
             LOG_ERROR << "New swapchain image format is not matched with "
@@ -46,7 +46,7 @@ void Renderer::RecreateSwapChain(VkExtent2D extent)
     }
     else
     {
-        _swapChain = std::make_unique<SwapChain>(_device, extent);
+        _swapChain = std::make_shared<SwapChain>(_device, extent);
     }
 }
 
